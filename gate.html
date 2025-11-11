@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unlock Script - LanHub</title>
+<style>
+:root{
+  --bg:#0e0f12; --card:#141416; --accent:#8a5cff; --muted:#bfc3cf;
+}
+body{background:var(--bg); color:var(--muted); font-family:Montserrat,system-ui; margin:0;display:flex;align-items:center;justify-content:center;height:100vh}
+.card{width:340px;padding:18px;border-radius:14px;background:linear-gradient(180deg,var(--card), rgba(10,10,10,0.6));box-shadow:0 8px 30px rgba(0,0,0,0.6)}
+h1{color:#fff;margin:0 0 10px;font-size:18px}
+p{margin:0 0 12px;font-size:13px}
+.row{display:flex;gap:10px}
+.btn{flex:1;padding:10px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+.linkv{background:linear-gradient(90deg,var(--accent),#46d6b6);color:#061217}
+.loot{background:#444;color:#fff}
+.small{font-size:12px;opacity:.85;margin-top:10px}
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Unlock Script</h1>
+    <p>Pilih metode unlock. Setelah selesai kamu akan dikembalikan ke sini (atau otomatis ke reveal page).</p>
+
+    <div class="row" style="margin-bottom:10px">
+      <!-- Ganti href ke Linkvertise mu, tambahkan return_url param jika perlu -->
+      <a id="linkv" class="btn linkv" href="https://linkvertise.com/YOUR_LINK?return_url=https://YOUR_DOMAIN/reveal.html?source=linkvertise" target="_blank" rel="noopener">Linkvertise</a>
+
+      <!-- Ganti href ke LootLabs mu, tambahkan return_url param jika perlu -->
+      <a id="loot" class="btn loot" href="https://lootlabs.io/YOUR_LINK?return_url=https://YOUR_DOMAIN/reveal.html?source=lootlabs" target="_blank" rel="noopener">LootLabs</a>
+    </div>
+
+    <div style="display:flex;gap:10px">
+      <button id="manual" class="btn" style="background:rgba(255,255,255,0.04);color:var(--muted);">I've finished</button>
+      <button id="openReveal" class="btn" style="background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);">Open Reveal</button>
+    </div>
+
+    <div class="small">Tip: Jika layanan support return URL, set ke <code>https://YOUR_DOMAIN/reveal.html?source=linkvertise</code> (ganti YOUR_DOMAIN).</div>
+  </div>
+
+<script>
+document.getElementById('openReveal').addEventListener('click', ()=> window.location.href = '/reveal.html');
+document.getElementById('manual').addEventListener('click', ()=> {
+  // manual path: pass source=manual so reveal shows script too
+  window.location.href = '/reveal.html?source=manual';
+});
+</script>
+</body>
+</html>
