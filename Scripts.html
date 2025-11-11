@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>LanHub | Script Viewer</title>
+  <style>
+    body { background:#0f0f13; color:white; font-family: "Montserrat", sans-serif; margin:0; padding:20px; }
+    .card { background:#18181d; padding:20px; border-radius:12px; }
+    pre { background:#111; padding:14px; border-radius:10px; overflow-x:auto; white-space: pre-wrap; }
+    .btn { padding:10px 14px; border-radius:8px; background:#6f3dfd; border:none; margin-right:10px; color:#fff; }
+  </style>
+</head>
+<body>
+
+<h2 id="scriptName">Loading...</h2>
+
+<div class="card">
+  <pre id="code">Loading script...</pre>
+</div>
+
+<br>
+<button class="btn" id="copyBtn">Copy</button>
+<a class="btn" id="rawBtn" target="_blank">Raw</a>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const id = urlParams.get("id");
+
+  fetch("scripts.json")
+    .then(res => res.json())
+    .then(data => {
+      const script = data.find(x => x.id === id);
+      document.getElementById("scriptName").innerText = script.name;
+
+      fetch(script.script_url)
+        .then(r => r.text())
+        .then(code => {
+          document.getElementById("code").textContent = code;
+          document.getElementById("rawBtn").href = script.script_url;
+        });
+    });
+
+  document.getElementById("copyBtn").onclick = () => {
+    navigator.clipboard.writeText(document.getElementById("code").textContent);
+    alert("Copied!");
+  };
+</script>
+
+</body>
+</html>
