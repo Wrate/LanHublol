@@ -1,239 +1,46 @@
-<!doctype html>
-<html lang="id">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>LanHub — Script Viewer</title>
-
-  <!-- Montserrat -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root{
-      --bg:#0f1113;            /* hitam soft */
-      --card:#141619;          /* card slightly lighter */
-      --muted:#bfc6cc;
-      --accent:#8b5cf6;        /* ungu soft */
-      --accent-2:#6ee7b7;
-      --glass: rgba(255,255,255,0.04);
-      --copy-green: #18b84a;
-      --copy-red: #e05b5b;
-      --radius:16px;
-      --mobile-padding:14px;
-    }
-
-    html,body{height:100%;margin:0;background:linear-gradient(180deg,#0c0d0f 0%, #0f1113 100%);font-family:"Montserrat",system-ui,Arial;color:#e6eef7}
-    .page{max-width:900px;margin:18px auto;padding:16px}
-    h1{font-size:18px;margin:0 0 12px;font-weight:700;color:#fff}
-    .card{
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:var(--radius);
-      padding:14px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.6);
-      border: 1px solid rgba(255,255,255,0.03);
-    }
-
-    /* code area layout */
-    .code-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
-    .meta{
-      display:flex;gap:10px;align-items:center;
-    }
-    .tag{
-      background:transparent;padding:6px 10px;border-radius:999px;color:var(--muted);font-size:13px;border:1px solid rgba(255,255,255,0.03)
-    }
-    .title{font-weight:600;color:#fff;font-size:14px}
-    .actions{display:flex;gap:8px;align-items:center}
-
-    .btn{
-      display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:600;font-size:13px;
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      color:var(--muted);
-      border:1px solid rgba(255,255,255,0.03);
-    }
-
-    .btn:active{transform:translateY(1px)}
-    .btn.raw{background:transparent;color:var(--muted);border:1px dashed rgba(255,255,255,0.03)}
-    .btn.copy{background:linear-gradient(90deg,var(--accent), #6b46ff); color:#fff;border:0}
-
-    /* big code box */
-    pre.codebox{
-      margin:0;
-      max-height:46vh;
-      overflow:auto;
-      border-radius:12px;
-      padding:14px;
-      background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.38));
-      border:1px solid rgba(255,255,255,0.02);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
-      font-size:13px;
-      color:#d8e6ff;
-      line-height:1.45;
-      white-space:pre-wrap;
-      word-break:break-word;
-    }
-
-    /* small copy badge top-right inside card */
-    .copy-bubble{
-      position:relative;
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      background: rgba(0,0,0,0.18);
-      padding:8px 12px;border-radius:999px;color:var(--muted);
-      border:1px solid rgba(255,255,255,0.02);
-      font-weight:600;font-size:13px;
-    }
-
-    /* mobile friendly adjustments */
-    @media (max-width:560px){
-      .page{padding:10px}
-      .card{padding:12px}
-      .code-header{flex-direction:column;align-items:flex-start}
-      .actions{width:100%;justify-content:space-between}
-      .btn{padding:8px 10px;font-size:13px}
-      pre.codebox{max-height:56vh;font-size:13px}
-    }
-
-    /* small toast */
-    .toast{
-      position:fixed;left:50%;transform:translateX(-50%);bottom:22px;background:linear-gradient(90deg,#0f1724,#071023);
-      color:#fff;padding:10px 16px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.6);font-weight:600;border:1px solid rgba(255,255,255,0.02)
-    }
-
-  </style>
+  <title>LanHub</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="page">
-    <h1>Contoh Jawaban</h1>
 
-    <div class="card" id="codeCard">
-      <div class="code-header">
-        <div class="meta">
-          <div class="title">Nama: LanHub</div>
-          <div class="tag">Font: Montserrat</div>
-          <div class="tag">Logo: none</div>
-        </div>
+<header>
+  <h1>LanHub</h1>
+  <p>Your Roblox Script Collection</p>
+</header>
 
-        <div class="actions">
-          <!-- Raw button -->
-          <button class="btn raw" id="rawBtn" title="Open raw (placeholder)">
-            Raw
-          </button>
+<div id="scripts"></div>
 
-          <!-- Copy button visible (mirip screenshot) -->
-          <div class="copy-bubble" id="copyBubble">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="8" y="3" width="13" height="13" rx="2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span id="copyLabel">Salin kode</span>
-          </div>
-        </div>
-      </div>
+<script>
+fetch("scripts.json")
+  .then(res => res.json())
+  .then(data => {
+    let container = document.getElementById("scripts");
 
-      <!-- code block -->
-      <pre class="codebox" id="codeBlock">
-// contoh script
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
--- LanHub sample
-print("Halo LanHub!")
--- Paste script lain di sini...
-      </pre>
-    </div>
+    data.forEach(script => {
+      let box = document.createElement("div");
+      box.className = "game-box";
 
-    <!-- small helper area -->
-    <div style="height:12px"></div>
-    <div style="display:flex;gap:10px;align-items:center">
-      <button class="btn copy" id="copyBtn"><span>Salin kode</span></button>
-      <button class="btn" id="downloadBtn">Download .txt</button>
-    </div>
-  </div>
+      box.innerHTML = `
+        <h2>${script.name}</h2>
+        <p>${script.description}</p>
+        <button class="raw-btn" onclick="window.open('${script.raw}','_blank')">Raw</button>
+        <button class="copy-btn" onclick="copyScript('${script.raw}')">Copy</button>
+      `;
 
-  <script>
-    // elements
-    const codeBlock = document.getElementById('codeBlock');
-    const copyBtn = document.getElementById('copyBtn');
-    const rawBtn = document.getElementById('rawBtn');
-    const copyBubble = document.getElementById('copyBubble');
-    const copyLabel = document.getElementById('copyLabel');
-    const downloadBtn = document.getElementById('downloadBtn');
-
-    // sample raw url placeholder (change to your raw file link)
-    rawBtn.addEventListener('click', ()=> {
-      // if you host raw on github or gist, open link
-      const rawUrl = '#'; // replace with actual raw link
-      if(rawUrl === '#') {
-        showToast('Raw link not set. Edit file to point raw URL.');
-      } else {
-        window.open(rawUrl,'_blank');
-      }
+      container.appendChild(box);
     });
+  });
 
-    // copy logic
-    async function copyToClipboard(text){
-      if(navigator.clipboard && navigator.clipboard.writeText){
-        await navigator.clipboard.writeText(text);
-        return true;
-      }
-      // fallback
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position='fixed';
-      ta.style.left='-9999px';
-      document.body.appendChild(ta);
-      ta.select();
-      try { document.execCommand('copy'); document.body.removeChild(ta); return true; }
-      catch(e){ document.body.removeChild(ta); return false; }
-    }
+function copyScript(url){
+  fetch(url).then(res => res.text()).then(text => {
+    navigator.clipboard.writeText(text);
+    alert("✅ Copied!");
+  });
+}
+</script>
 
-    function showToast(txt,timeout=1500){
-      const t = document.createElement('div');
-      t.className='toast'; t.textContent = txt;
-      document.body.appendChild(t);
-      setTimeout(()=> t.style.opacity = 0, timeout-200);
-      setTimeout(()=> t.remove(), timeout);
-    }
-
-    // wired buttons
-    copyBtn.addEventListener('click', async ()=>{
-      const txt = codeBlock.textContent.trim();
-      const ok = await copyToClipboard(txt);
-      if(ok) { copyBtn.textContent = 'Copied ✓'; copyBtn.style.background = 'var(--copy-green)'; setTimeout(()=>{ copyBtn.textContent = 'Salin kode'; copyBtn.style.background = '' },1200) }
-      showToast(ok ? 'Kode disalin ke clipboard' : 'Gagal menyalin');
-    });
-
-    // also clicking bubble copies
-    copyBubble.addEventListener('click', async ()=>{
-      const txt = codeBlock.textContent.trim();
-      const ok = await copyToClipboard(txt);
-      copyLabel.textContent = ok ? 'Tersalin' : 'Gagal';
-      setTimeout(()=> copyLabel.textContent = 'Salin kode',1000);
-      showToast(ok ? 'Kode disalin' : 'Gagal menyalin');
-    });
-
-    // download text file
-    downloadBtn.addEventListener('click', ()=>{
-      const blob = new Blob([codeBlock.textContent], {type:'text/plain;charset=utf-8'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'lanhub-script.txt';
-      document.body.appendChild(a); a.click(); a.remove();
-      URL.revokeObjectURL(url);
-      showToast('File siap di-download');
-    });
-
-    // small UX: long-press copy on code area
-    let pressTimer=null;
-    codeBlock.addEventListener('pointerdown', ()=> {
-      pressTimer = setTimeout(()=> {
-        copyBlockQuick();
-      },700);
-    });
-    codeBlock.addEventListener('pointerup', ()=> { clearTimeout(pressTimer); pressTimer = null; });
-    codeBlock.addEventListener('pointerleave', ()=> { clearTimeout(pressTimer); pressTimer = null; });
-
-    async function copyBlockQuick(){
-      const ok = await copyToClipboard(codeBlock.textContent.trim());
-      showToast(ok ? 'Copied' : 'Failed', 1000);
-    }
-
-  </script>
 </body>
 </html>
