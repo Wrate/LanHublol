@@ -171,9 +171,9 @@
         id: "entrechedww1",
         name: "Entrenched WW1",
         created: "Oct 2025",
-        gameId: 10157613626,
-        script: `-- LanHub Script: Dead Rails
-print("LanHub Dead Rails Script Loaded!")`
+        gameId: 3678761576,
+        script: `-- LanHub Script: Entrenched WW1
+print("LanHub Entrenched Script Loaded!")`
       },
       {
         id: "forest",
@@ -187,11 +187,22 @@ print("LanHub Forest Script Loaded!")`
 
     const container = document.getElementById("cardContainer");
 
-    function renderCards() {
-      container.innerHTML = ""; // Hapus semua biar gak dobel
+    async function getThumbnail(gameId) {
+      try {
+        const res = await fetch(
+          `https://thumbnails.roblox.com/v1/games/icons?universeIds=${gameId}&size=420x420&format=Png`
+        );
+        const data = await res.json();
+        return data.data?.[0]?.imageUrl || "https://i.ibb.co/3zM4G2L/lanhub-default.png";
+      } catch {
+        return "https://i.ibb.co/3zM4G2L/lanhub-default.png";
+      }
+    }
 
-      scriptsData.forEach(data => {
-        const imgSrc = `https://www.roblox.com/asset-thumbnail/image?assetId=${data.gameId}&width=420&height=420&format=Png`;
+    async function renderCards() {
+      container.innerHTML = "";
+      for (const data of scriptsData) {
+        const imgSrc = await getThumbnail(data.gameId);
         const card = document.createElement("div");
         card.className = "card";
         card.setAttribute("data-name", data.name.toLowerCase());
@@ -201,14 +212,13 @@ print("LanHub Forest Script Loaded!")`
           <h2>${data.name}</h2>
           <p class="date">Created: ${data.created}</p>
           <div class="buttons">
-            <button onclick="openRaw('${data.id}', event)">Raw</button>
+            <button onclick="openRaw('${data.id}')">Raw</button>
             <button onclick="copyScript('${data.id}', event)">Copy</button>
             <button onclick="downloadScript('${data.id}')">Download</button>
           </div>
         `;
-
         container.appendChild(card);
-      });
+      }
     }
 
     function filterScripts() {
@@ -242,7 +252,7 @@ print("LanHub Forest Script Loaded!")`
       rawWindow.document.write(`
         <body style="background:#0a0012;color:white;padding:20px;font-family:monospace;">
           <h2 style="color:#c293ff;">LanHub Raw Script - ${data.name}</h2>
-          <pre style="background:#150021;padding:15px;border-radius:12px;font-size:14px;">${data.script}</pre>
+          <pre style="background:#150021;padding:15px;border-radius:12px;font-size:14px;white-space:pre-wrap;">${data.script}</pre>
         </body>
       `);
       rawWindow.document.title = "LanHub Raw Script";
@@ -266,7 +276,6 @@ print("LanHub Forest Script Loaded!")`
       link.click();
     }
 
-    // 🧱 Mulai render awal
     renderCards();
   </script>
 </body>
