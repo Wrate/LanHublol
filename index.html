@@ -1,46 +1,102 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>LanHub</title>
-  <link rel="stylesheet" href="style.css">
+  <title>LanHub Scripts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #0e0e0e;
+      font-family: 'Montserrat', sans-serif;
+      color: white;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      font-size: 32px;
+      font-weight: 700;
+      color: #a066ff;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: rgba(30, 30, 30, 0.8);
+      border: 1px solid #3d1c70;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .thumb {
+      width: 90px;
+      height: 90px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .info {
+      flex: 1;
+    }
+
+    .name {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .date {
+      opacity: 0.7;
+      font-size: 13px;
+    }
+
+    .buttons button {
+      background: #a066ff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-right: 6px;
+      transition: 0.25s;
+    }
+
+    .buttons button:hover {
+      opacity: 0.8;
+    }
+  </style>
 </head>
 <body>
 
-<header>
-  <h1>LanHub</h1>
-  <p>Your Roblox Script Collection</p>
-</header>
+  <div class="header">LanHub Script List</div>
 
-<div id="scripts"></div>
+  <!-- CARD SCRIPT -->
+  <div class="card">
+    <img src="https://tr.rbxcdn.com/c6bdb70e0a662690f2316ac346fac9f5/768/432/Image/Png" class="thumb">
 
-<script>
-fetch("scripts.json")
-  .then(res => res.json())
-  .then(data => {
-    let container = document.getElementById("scripts");
+    <div class="info">
+      <div class="name">99 Nights in The Forest</div>
+      <div class="date">Created: 2025-02-14</div>
+    </div>
 
-    data.forEach(script => {
-      let box = document.createElement("div");
-      box.className = "game-box";
+    <div class="buttons">
+      <button onclick="openRaw('https://pastebin.com/raw/XXXXXXXX')">Raw</button>
+      <button onclick="copyScript(`loadstring(game:HttpGet('https://pastebin.com/raw/XXXXXXXX'))()`)">Copy</button>
+    </div>
+  </div>
 
-      box.innerHTML = `
-        <h2>${script.name}</h2>
-        <p>${script.description}</p>
-        <button class="raw-btn" onclick="window.open('${script.raw}','_blank')">Raw</button>
-        <button class="copy-btn" onclick="copyScript('${script.raw}')">Copy</button>
-      `;
+  <script>
+    function openRaw(link) {
+      window.open(link, '_blank');
+    }
 
-      container.appendChild(box);
-    });
-  });
-
-function copyScript(url){
-  fetch(url).then(res => res.text()).then(text => {
-    navigator.clipboard.writeText(text);
-    alert("✅ Copied!");
-  });
-}
-</script>
+    function copyScript(text) {
+      navigator.clipboard.writeText(text);
+      alert("✅ Script Copied!");
+    }
+  </script>
 
 </body>
 </html>
