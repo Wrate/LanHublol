@@ -141,7 +141,7 @@
       color: #aaa;
       font-size: 0.9rem;
       text-align: center;
-      padding-bottom: 10px;
+      padding-bottom: 15px;
       animation: fadeIn 2s ease;
     }
 
@@ -186,7 +186,8 @@
   </div>
 
   <footer>
-    © 2025 LanHub | All Rights Reserved.
+    © 2025 <strong>LanHub</strong> — All Rights Reserved.<br>
+    <span style="font-size:0.8rem; color:#7d7d7d;">Designed by Lan (Mobile UI Edition)</span>
   </footer>
 
   <script>
@@ -225,7 +226,7 @@ print("LanHub Dead Rails Script Loaded!")`
       }
     }
 
-    function openRaw(name, event) {
+    function openRaw(name) {
       const rawWindow = window.open("", "_blank");
       rawWindow.document.write(`
         <body style="background:#0a0012;color:white;padding:20px;font-family:monospace;">
@@ -242,20 +243,6 @@ print("LanHub Dead Rails Script Loaded!")`
       const oldText = btn.textContent;
       btn.textContent = "✅ Copied!";
       setTimeout(() => (btn.textContent = oldText), 1200);
-    }
-
-    function downloadScript(name) {
-      const blob = new Blob([scripts[name]], { type: "text/plain" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = name + ".txt";
-      link.click();
-    }
-  </script>
-</body>
-</html>pt(name) {
-      navigator.clipboard.writeText(scripts[name]);
-      alert("✅ Script copied to clipboard!");
     }
 
     function downloadScript(name) {
