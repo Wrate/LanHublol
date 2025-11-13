@@ -168,18 +168,18 @@
   <script>
     const scriptsData = [
       {
-        id: "entrechedww1",
+        id: "entrenched",
         name: "Entrenched WW1",
         created: "Oct 2025",
         gameId: 3678761576,
         script: `-- LanHub Script: Entrenched WW1
-print("LanHub Entrenched Script Loaded!")`
+print("LanHub Entrenched WW1 Script Loaded!")`
       },
       {
         id: "forest",
         name: "99 Night In The Forest",
         created: "Nov 2025",
-        gameId: 3678761576,
+        gameId: 16898830773,
         script: `-- LanHub Script: 99 Night In The Forest
 print("LanHub Forest Script Loaded!")`
       }
@@ -187,38 +187,30 @@ print("LanHub Forest Script Loaded!")`
 
     const container = document.getElementById("cardContainer");
 
-    async function getThumbnail(gameId) {
-      try {
-        const res = await fetch(
-          `https://thumbnails.roblox.com/v1/games/icons?universeIds=${gameId}&size=420x420&format=Png`
-        );
-        const data = await res.json();
-        return data.data?.[0]?.imageUrl || "https://i.ibb.co/3zM4G2L/lanhub-default.png";
-      } catch {
-        return "https://i.ibb.co/3zM4G2L/lanhub-default.png";
-      }
-    }
-
-    async function renderCards() {
+    function renderCards() {
       container.innerHTML = "";
-      for (const data of scriptsData) {
-        const imgSrc = await getThumbnail(data.gameId);
+
+      scriptsData.forEach(data => {
+        // ✅ FIXED: Roblox thumbnail API terbaru
+        const imgSrc = `https://thumbnails.roblox.com/v1/places/gameicons?placeIds=${data.gameId}&size=420x420&format=Png&isCircular=false`;
+
         const card = document.createElement("div");
         card.className = "card";
         card.setAttribute("data-name", data.name.toLowerCase());
 
         card.innerHTML = `
-          <img src="${imgSrc}" alt="${data.name} Thumbnail" />
+          <img src="${imgSrc}" alt="${data.name} Thumbnail" onerror="this.src='https://tr.rbxcdn.com/0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f/420/420/Image/Png'" />
           <h2>${data.name}</h2>
           <p class="date">Created: ${data.created}</p>
           <div class="buttons">
-            <button onclick="openRaw('${data.id}')">Raw</button>
+            <button onclick="openRaw('${data.id}', event)">Raw</button>
             <button onclick="copyScript('${data.id}', event)">Copy</button>
             <button onclick="downloadScript('${data.id}')">Download</button>
           </div>
         `;
+
         container.appendChild(card);
-      }
+      });
     }
 
     function filterScripts() {
@@ -252,7 +244,7 @@ print("LanHub Forest Script Loaded!")`
       rawWindow.document.write(`
         <body style="background:#0a0012;color:white;padding:20px;font-family:monospace;">
           <h2 style="color:#c293ff;">LanHub Raw Script - ${data.name}</h2>
-          <pre style="background:#150021;padding:15px;border-radius:12px;font-size:14px;white-space:pre-wrap;">${data.script}</pre>
+          <pre style="background:#150021;padding:15px;border-radius:12px;font-size:14px;">${data.script}</pre>
         </body>
       `);
       rawWindow.document.title = "LanHub Raw Script";
