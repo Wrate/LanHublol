@@ -171,7 +171,7 @@
         id: "entrenched",
         name: "Entrenched WW1",
         created: "Oct 2025",
-        gameId: 3678761576,
+        gameLink: "https://www.roblox.com/games/3678761576/ENTRENCHED-WW1",
         script: `-- LanHub Script: Entrenched WW1
 print("LanHub Entrenched WW1 Script Loaded!")`
       },
@@ -179,7 +179,7 @@ print("LanHub Entrenched WW1 Script Loaded!")`
         id: "forest",
         name: "99 Night In The Forest",
         created: "Nov 2025",
-        gameId: 16898830773,
+        gameLink: "https://www.roblox.com/games/16898830773/99-Night-In-The-Forest",
         script: `-- LanHub Script: 99 Night In The Forest
 print("LanHub Forest Script Loaded!")`
       }
@@ -187,19 +187,29 @@ print("LanHub Forest Script Loaded!")`
 
     const container = document.getElementById("cardContainer");
 
+    function extractPlaceId(url) {
+      const match = url.match(/games\/(\d+)\//);
+      return match ? match[1] : null;
+    }
+
+    function getThumbnailURL(gameLink) {
+      const placeId = extractPlaceId(gameLink);
+      return placeId
+        ? `https://images.rbxcdn.com/7c1d4dbbdb8c8c5b91c3f42a9a89e9db/${placeId}.png`
+        : "https://tr.rbxcdn.com/9b1f0cc2d32537f9f95a0677a6e05a4a/420/420/Image/Png";
+    }
+
     function renderCards() {
       container.innerHTML = "";
 
       scriptsData.forEach(data => {
-        // ✅ FIXED: Roblox thumbnail API terbaru
-        const imgSrc = `https://thumbnails.roblox.com/v1/places/gameicons?placeIds=${data.gameId}&size=420x420&format=Png&isCircular=false`;
-
+        const imgSrc = getThumbnailURL(data.gameLink);
         const card = document.createElement("div");
         card.className = "card";
         card.setAttribute("data-name", data.name.toLowerCase());
 
         card.innerHTML = `
-          <img src="${imgSrc}" alt="${data.name} Thumbnail" onerror="this.src='https://tr.rbxcdn.com/0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f/420/420/Image/Png'" />
+          <img src="${imgSrc}" alt="${data.name} Thumbnail" />
           <h2>${data.name}</h2>
           <p class="date">Created: ${data.created}</p>
           <div class="buttons">
