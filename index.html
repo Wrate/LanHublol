@@ -5,12 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LanHub - Script Library</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Montserrat", sans-serif;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Montserrat", sans-serif; }
 
     body {
       background: linear-gradient(160deg, #0b0010, #190024);
@@ -39,11 +34,14 @@
 
     .search-container {
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
       margin-bottom: 20px;
     }
 
-    .search-container input {
+    .search-container input, .search-container select {
       width: 100%;
       padding: 12px 15px;
       border-radius: 14px;
@@ -55,7 +53,7 @@
       transition: 0.3s;
     }
 
-    .search-container input:focus {
+    .search-container input:focus, .search-container select:focus {
       box-shadow: 0 0 15px #a855f7;
     }
 
@@ -65,7 +63,6 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
-      position: relative;
     }
 
     .card {
@@ -96,17 +93,9 @@
       margin-bottom: 10px;
     }
 
-    .card h2 {
-      font-size: 1.2rem;
-      color: #d6b3ff;
-      margin-bottom: 6px;
-    }
+    .card h2 { font-size: 1.2rem; color: #d6b3ff; margin-bottom: 6px; }
 
-    .date {
-      font-size: 0.9rem;
-      color: #bbb;
-      margin-bottom: 12px;
-    }
+    .date { font-size: 0.9rem; color: #bbb; margin-bottom: 12px; }
 
     .buttons {
       display: flex;
@@ -156,6 +145,13 @@
 
   <div class="search-container">
     <input id="searchInput" type="text" placeholder="🔍 Search scripts..." oninput="filterScripts()">
+    <select id="filterSelect" onchange="filterScripts()">
+      <option value="">📁 All Categories</option>
+      <option value="Shooter">🔫 Shooter</option>
+      <option value="Tower">🗼 Tower</option>
+      <option value="Simulator">⚙️ Simulator</option>
+      <option value="Adventure">🧭 Adventure</option>
+    </select>
   </div>
 
   <div class="card-container" id="cardContainer"></div>
@@ -168,50 +164,49 @@
   <script>
     const scriptsData = [
       {
-        id: "entrenched",
+        id: "entrechedww1",
         name: "Entrenched WW1",
+        category: "Shooter",
         created: "Oct 2025",
         gameLink: "https://www.roblox.com/games/3678761576/ENTRENCHED-WW1",
-        script: `-- LanHub Script: Entrenched WW1
-print("LanHub Entrenched WW1 Script Loaded!")`
+        script: `print("LanHub Entrenched Script Loaded!")`
       },
       {
         id: "forest",
-        name: "99 Night In The Forest",
+        name: "99 Nights In The Forest",
+        category: "Adventure",
         created: "Nov 2025",
-        gameLink: "https://www.roblox.com/games/16898830773/99-Night-In-The-Forest",
-        script: `-- LanHub Script: 99 Night In The Forest
-print("LanHub Forest Script Loaded!")`
+        gameLink: "https://www.roblox.com/games/16898830773/99-Nights-In-The-Forest",
+        script: `print("LanHub Forest Script Loaded!")`
       }
     ];
 
     const container = document.getElementById("cardContainer");
 
-    function extractPlaceId(url) {
-      const match = url.match(/games\/(\d+)\//);
-      return match ? match[1] : null;
+    function extractPlaceId(link) {
+      const match = link.match(/(\d+)/);
+      return match ? match[0] : null;
     }
 
     function getThumbnailURL(gameLink) {
       const placeId = extractPlaceId(gameLink);
-      return placeId
-        ? `https://images.rbxcdn.com/7c1d4dbbdb8c8c5b91c3f42a9a89e9db/${placeId}.png`
-        : "https://tr.rbxcdn.com/9b1f0cc2d32537f9f95a0677a6e05a4a/420/420/Image/Png";
+      return `https://tr.rbxcdn.com/${placeId}_thumbnail/420/420/Image/Png`;
     }
 
     function renderCards() {
       container.innerHTML = "";
-
       scriptsData.forEach(data => {
         const imgSrc = getThumbnailURL(data.gameLink);
         const card = document.createElement("div");
         card.className = "card";
         card.setAttribute("data-name", data.name.toLowerCase());
+        card.setAttribute("data-category", data.category.toLowerCase());
 
         card.innerHTML = `
-          <img src="${imgSrc}" alt="${data.name} Thumbnail" />
+          <img src="${imgSrc}" alt="${data.name} Thumbnail" onerror="this.src='https://tr.rbxcdn.com/9b1f0cc2d32537f9f95a0677a6e05a4a/420/420/Image/Png';" />
           <h2>${data.name}</h2>
           <p class="date">Created: ${data.created}</p>
+          <p style="color:#a67ff7;">Category: ${data.category}</p>
           <div class="buttons">
             <button onclick="openRaw('${data.id}', event)">Raw</button>
             <button onclick="copyScript('${data.id}', event)">Copy</button>
@@ -225,12 +220,16 @@ print("LanHub Forest Script Loaded!")`
 
     function filterScripts() {
       const input = document.getElementById("searchInput").value.toLowerCase().trim();
+      const category = document.getElementById("filterSelect").value.toLowerCase();
       const cards = container.querySelectorAll(".card");
       let visibleCount = 0;
 
       cards.forEach(card => {
         const title = card.getAttribute("data-name");
-        const visible = title.includes(input);
+        const cat = card.getAttribute("data-category");
+        const matchesSearch = title.includes(input);
+        const matchesCategory = !category || cat === category;
+        const visible = matchesSearch && matchesCategory;
         card.classList.toggle("hidden", !visible);
         if (visible) visibleCount++;
       });
