@@ -1,74 +1,87 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>LanHub - Script Library</title>
 <style>
-  /* Basic reset */
-  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg-1:#0b0010; --bg-2:#190024; --card:#170022;
+    --accent:#a855f7; --accent-2:#c293ff; --muted:#9b9b9b;
+    --purple:#6b21a8; --btn-hover:#9333ea;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;font-family:Montserrat,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;}
   html,body{height:100%}
   body{
-    font-family: "Montserrat",system-ui,Segoe UI,Roboto,Helvetica,Arial;
-    background: linear-gradient(160deg,#0b0010,#190024);
-    color:#fff;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    padding:20px;
-    gap:16px;
+    min-height:100vh;background:linear-gradient(160deg,var(--bg-1),var(--bg-2));
+    color:#fff;padding:18px;display:flex;flex-direction:column;align-items:center;
   }
 
-  header{width:100%;max-width:920px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-  h1{font-size:1.4rem;color:#c293ff;text-shadow:0 0 10px #a855f7}
-  .controls{display:flex;gap:8px;align-items:center}
-  .controls input,.controls select{
-    padding:10px 12px;border-radius:12px;border:none;outline:none;
-    background:rgba(40,0,70,0.6);color:#fff;min-width:140px;
+  header{width:100%;max-width:720px;margin-bottom:14px}
+  h1{font-size:20px;color:var(--accent-2);text-align:left;text-shadow:0 0 10px var(--accent);letter-spacing:1px}
+
+  .top-controls{display:flex;gap:8px;align-items:center;margin:10px 0 18px 0;width:100%;max-width:720px}
+  .search-wrap{flex:1}
+  .search-wrap input{
+    width:100%;padding:12px 14px;border-radius:12px;border:0;background:rgba(50,0,70,0.6);color:#fff;
+    outline:none;font-size:15px;box-shadow:0 0 8px rgba(168,85,247,0.04);
   }
-  .controls select{background:rgba(80,0,150,0.55);border:1px solid rgba(168,85,247,0.18)}
+  .search-wrap input:focus{box-shadow:0 0 14px rgba(168,85,247,0.12)}
+  .select-cat{
+    margin-left:8px;padding:10px;border-radius:12px;border:0;background:rgba(80,0,150,0.45);color:#fff;
+    font-size:14px;min-width:120px;
+  }
 
-  /* container */
-  .wrap{width:100%;max-width:920px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .grid{width:100%;max-width:720px;display:flex;flex-direction:column;gap:14px}
 
-  /* card */
   .card{
-    background:rgba(25,0,40,0.75);
-    border-radius:14px;padding:12px;border:1px solid rgba(168,85,247,0.14);
-    box-shadow:0 6px 20px rgba(0,0,0,0.6);backdrop-filter:blur(8px);display:flex;flex-direction:column;gap:8px;
-    position:relative;
+    background:linear-gradient(180deg,rgba(30,0,40,0.7),rgba(22,0,34,0.85));
+    border:1px solid rgba(168,85,247,0.18);padding:12px;border-radius:14px;backdrop-filter: blur(6px);
+    display:flex;flex-direction:column;gap:8px;box-shadow:0 4px 18px rgba(0,0,0,0.35);
   }
+
   .thumb{
-    width:100%;height:150px;border-radius:10px;overflow:hidden;background:#2b003a;display:flex;align-items:center;justify-content:center;
+    width:100%;height:170px;border-radius:10px;overflow:hidden;background:linear-gradient(135deg,#3a0060,#6b21a8);
+    display:flex;align-items:center;justify-content:center;color:var(--accent-2);font-weight:700;letter-spacing:2px;
   }
   .thumb img{width:100%;height:100%;object-fit:cover;display:block}
-  .beta{position:absolute;left:12px;top:12px;background:linear-gradient(90deg,#6b21a8,#a855f7);padding:6px 8px;border-radius:8px;font-weight:700;font-size:.8rem;color:white;letter-spacing:1px}
-  .meta{display:flex;justify-content:space-between;align-items:center}
-  .meta .title{font-weight:700;color:#e7d4ff}
-  .meta .small{color:#bdb0cf;font-size:.85rem}
-  .buttons{display:flex;gap:8px;margin-top:6px}
-  button{flex:1;padding:8px 10px;border-radius:10px;border:none;background:#6b21a8;color:white;font-weight:700;cursor:pointer}
-  button:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(147,51,234,0.16)}
-  button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 
-  /* popup modal */
-  #overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:999}
-  #modal{background:#120018;padding:18px;border-radius:14px;border:1px solid #3a004f;min-width:280px;max-width:420px}
-  #modal h3{color:#dcb8ff;margin-bottom:10px}
-  .serviceBtns{display:flex;flex-direction:column;gap:8px}
-  .serviceBtns button{padding:10px;border-radius:10px;border:none;background:#6b21a8;color:white;font-weight:700}
-  .serviceBtns .cancel{background:#3a004f}
+  .meta{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .meta .left{display:flex;flex-direction:column}
+  .meta h2{font-size:16px;color:#e6ccff;margin-bottom:4px}
+  .meta .sub{font-size:13px;color:var(--muted)}
 
-  /* checking overlay */
-  #checking{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.65);z-index:1000}
-  #checkingBox{background:#0f0020;padding:18px;border-radius:12px;border:1px solid #6b21a8;display:flex;flex-direction:column;align-items:center;gap:10px}
-  .small-muted{color:#b9aee0;font-size:.9rem}
+  .actions{display:flex;gap:8px;margin-top:6px}
+  .btn{flex:1;padding:10px;border-radius:10px;border:0;background:var(--purple);color:#fff;font-weight:700;cursor:pointer}
+  .btn:hover{background:var(--btn-hover);transform:translateY(-2px);box-shadow:0 6px 20px rgba(147,51,234,0.14)}
 
-  footer{color:#aaa;font-size:.85rem;margin-top:10px;text-align:center}
-  @media (max-width:520px){
-    header{flex-direction:column;align-items:flex-start;gap:10px}
-    .controls input{min-width:120px}
+  .status{font-size:13px;color:#8ef59f;margin-top:6px}
+
+  footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center;width:100%;max-width:720px;padding-bottom:10px}
+
+  /* Popup small box (Anti bypass check + service select) */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;z-index:9999}
+  .popup{
+    width:90%;max-width:360px;background:#120018;border-radius:12px;padding:18px;border:1px solid rgba(168,85,247,0.24);
+    box-shadow:0 10px 40px rgba(10,0,20,0.6);text-align:center;color:#fff;
+  }
+  .popup h3{color:var(--accent-2);margin-bottom:8px}
+  .popup p{color:#ddd;font-size:14px;margin-bottom:12px}
+  .popup .popup-row{display:flex;gap:8px;justify-content:center;margin-bottom:10px}
+  .popup .popup-row button{flex:1;padding:10px;border-radius:8px;border:0;background:var(--purple);color:#fff}
+  .popup .small-muted{font-size:12px;color:#b6b6b6;margin-top:8px}
+
+  /* Anti-bypass checking box style */
+  .checking-box{display:flex;align-items:center;gap:12px;justify-content:center;flex-direction:column}
+  .spinner{width:48px;height:48px;border-radius:50%;border:4px solid rgba(255,255,255,0.06);border-top-color:var(--accent);animation:spin 0.9s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* Toast */
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:22px;background:#0d0014;padding:10px 14px;border-radius:10px;border:1px solid rgba(168,85,247,0.16);color:#fff;z-index:12000}
+
+  /* responsive */
+  @media (min-width:720px){
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
   }
 </style>
 </head>
@@ -76,544 +89,344 @@
 
 <header>
   <h1>LanHub Script Library</h1>
-  <div class="controls">
-    <input id="search" placeholder="🔍 Search scripts..." />
-    <select id="category">
+  <div class="top-controls">
+    <div class="search-wrap">
+      <input id="searchInput" placeholder="🔍 Search scripts..." oninput="filterScripts()" />
+    </div>
+    <select id="catSelect" class="select-cat" onchange="filterScripts()">
       <option value="all">All categories</option>
+      <!-- categories added at runtime -->
     </select>
   </div>
 </header>
 
-<main class="wrap">
-  <div id="grid" class="grid"></div>
-</main>
-
-<!-- unlock service modal -->
-<div id="overlay" aria-hidden="true">
-  <div id="modal" role="dialog" aria-modal="true">
-    <h3>Choose Unlock Service</h3>
-    <p class="small-muted" id="modalTitle">Select a service to unlock the script.</p>
-    <div class="serviceBtns">
-      <button id="srvLinkvertise">Linkvertise</button>
-      <button id="srvLootlabs">LootLabs</button>
-      <button class="cancel" id="srvCancel">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- checking / anti-bypass UI -->
-<div id="checking" aria-hidden="true">
-  <div id="checkingBox">
-    <div style="font-weight:800;color:#d6b3ff">LanHub Anti-Bypass Detection</div>
-    <div id="checkingMsg" class="small-muted">Checking... please wait</div>
-    <div id="checkingProgress" style="width:180px;height:8px;background:rgba(255,255,255,0.08);border-radius:8px;overflow:hidden">
-      <div id="checkingFill" style="width:0%;height:100%;background:linear-gradient(90deg,#6b21a8,#a855f7)"></div>
-    </div>
-  </div>
-</div>
+<main class="grid" id="grid"></main>
 
 <footer>© 2025 LanHub — All Rights Reserved.</footer>
 
-<script>
-/*
-  LanHub: single-file page
-  - per-script unlock link (per script config below)
-  - anti-bypass detection based on return timing and enforced cooldown.
-  - unlocked scripts stored in localStorage (key: lanhub_unlocked)
-*/
+<!-- Overlay container (single, won't duplicate) -->
+<div id="overlayRoot" style="display:none"></div>
 
-/* ========== CONFIG: add/modify your scripts here ========== */
-const SCRIPTS = [
+<!-- Toast root -->
+<div id="toastRoot"></div>
+
+<script>
+/* ========== CONFIG ========== */
+/* Anti-bypass settings (mode A chosen) */
+const BYPASS_THRESHOLD_MS = 3000; // < 3s => bypass
+const LOCK_DURATION_MS = 60000; // 60s lock on bypass
+
+/* ========== Data (example) ========== */
+/* Fill per-script direct-link per script in data.directLink */
+const scriptsData = [
   {
-    id: "entrenched-ww1",
+    id: "entrenchedww1",
     name: "Entrenched WW1",
     created: "Oct 2025",
     category: "Shooter",
-    gameLink: "https://www.roblox.com/games/10157613626/ENTRENCHED-WW1",
-    // per-script unlock links (choose the service URL you want)
-    unlock: {
-      linkvertise: "https://direct-link.net/1321138/ajnMHzXvEJoy", // example
-      lootlabs:   "https://direct-link.net/1321138/ajnMHzXvEJy"
-    },
-    script: `-- LanHub Script: Entrenched WW1
-print("Entrenched WW1 script loaded!")`
+    gameLink: "https://www.roblox.com/games/3678761576/ENTRENCHED-WW1", // example
+    directLink: "https://direct-link.net/1321138/ajnMHzXvEJoy", // unique per script
+    script: `-- Entrenched WW1 loader
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Wrate/Entrenched-Ww1/main/Main.loader"))()`
   },
   {
-    id: "forest-99",
+    id: "forest99",
     name: "99 Night In The Forest",
     created: "Nov 2025",
     category: "Adventure",
     gameLink: "https://www.roblox.com/games/16898830773/99-Night-In-The-Forest",
-    unlock: {
-      linkvertise: "https://direct-link.net/1321138/forestLink1",
-      lootlabs:   "https://direct-link.net/1321138/forestLink2"
-    },
-    script: `-- LanHub Script: 99 Night In The Forest
-print("Forest script loaded!")`
+    directLink: "https://direct-link.net/1321138/ajnMHzXvEJy",
+    script: `-- 99 Night In The Forest sample script
+print("LanHub: 99 Night In The Forest loaded!")`
   }
 ];
-/* ========================================================= */
 
-/* state & helpers */
-const grid = document.getElementById("grid");
-const search = document.getElementById("search");
-const categorySel = document.getElementById("category");
-const overlay = document.getElementById("overlay");
-const checking = document.getElementById("checking");
-const checkingFill = document.getElementById("checkingFill");
-const checkingMsg = document.getElementById("checkingMsg");
+/* ========== State ========== */
+const grid = document.getElementById('grid');
+const overlayRoot = document.getElementById('overlayRoot');
+const toastRoot = document.getElementById('toastRoot');
+let pendingAction = null; // {id, action, startRedirectAt}
+let lockedUntil = 0; // timestamp ms when lock expires
 
-const UNLOCK_KEY = "lanhub_unlocked_v1"; // localStorage key
-let unlocked = JSON.parse(localStorage.getItem(UNLOCK_KEY) || "{}");
+/* Utility: toast */
+function toast(msg, dur=1500){
+  const t = document.createElement('div');
+  t.className = 'toast'; t.innerText = msg; toastRoot.appendChild(t);
+  setTimeout(()=>{ t.remove(); }, dur);
+}
 
-/* Anti-bypass: cooldown storage key */
-const COOLDOWN_KEY = "lanhub_cooldown_until";
-
-/* pending action when asking to unlock */
-let pending = { id:null, action:null };
-
-/* init categories */
-(function init() {
-  const cats = ["all", ...new Set(SCRIPTS.map(s=>s.category))];
-  cats.forEach(c=>{
-    const opt=document.createElement("option");
-    opt.value=c.toLowerCase();
-    opt.textContent=c;
-    categorySel.appendChild(opt);
-  });
-})();
-
-/* utility: get roblox thumbnail from gameLink (extract numeric id) */
-function getThumbnailFromGameLink(link){
+/* Extract gameId from gameLink (roblox) */
+function getGameIdFromLink(link){
+  if (!link) return null;
   try{
+    // possible formats: /games/{id}/..., /games/{id}
     const m = link.match(/\/games\/(\d+)/);
-    if(m && m[1]) return `https://www.roblox.com/asset-thumbnail/image?assetId=${m[1]}&width=420&height=420&format=Png`;
+    if (m) return m[1];
+    const m2 = link.match(/\/catalog\/\?id=(\d+)/);
+    if (m2) return m2[1];
   }catch(e){}
   return null;
 }
 
-/* render cards */
-function render(){
-  grid.innerHTML = "";
-  const q = search.value.trim().toLowerCase();
-  const cat = categorySel.value.toLowerCase();
-  SCRIPTS.forEach(s=>{
-    if(cat!=="all" && s.category.toLowerCase()!==cat) return;
-    if(q && !s.name.toLowerCase().includes(q) && !s.category.toLowerCase().includes(q)) return;
+/* Build thumbnail url (roblox asset-thumbnail) */
+function thumbnailUrlFromGameLink(link){
+  const id = getGameIdFromLink(link);
+  if (!id) return null;
+  return `https://www.roblox.com/asset-thumbnail/image?assetId=${id}&width=420&height=420&format=Png`;
+}
 
-    const div = document.createElement("div");
-    div.className = "card";
-    div.dataset.id = s.id;
+/* Render UI cards */
+function renderCards(){
+  grid.innerHTML = '';
+  // collect categories
+  const cats = new Set(['all']);
+  scriptsData.forEach(s=>cats.add(s.category));
+  // populate category select if empty
+  const sel = document.getElementById('catSelect');
+  if (sel.options.length <= 1){
+    // clear extras
+    while(sel.options.length>1) sel.remove(1);
+    Array.from(cats).filter(c=>c!=='all').forEach(c=>{
+      const o = document.createElement('option'); o.value=c; o.innerText=c; sel.appendChild(o);
+    });
+  }
 
-    // thumbnail (try thumbnail; if not available, show BETA gradient)
-    const thumbDiv = document.createElement("div");
-    thumbDiv.className = "thumb";
-    const thumbUrl = getThumbnailFromGameLink(s.gameLink);
-    if(thumbUrl){
-      const img = document.createElement("img");
-      img.src = thumbUrl;
-      img.onerror = ()=>{ thumbDiv.innerText = "BETA"; thumbDiv.style.justifyContent="center"; thumbDiv.style.fontWeight="800";};
+  scriptsData.forEach(data=>{
+    const card = document.createElement('div'); card.className='card';
+    // thumb
+    const thumbDiv = document.createElement('div'); thumbDiv.className='thumb';
+    const thumbUrl = thumbnailUrlFromGameLink(data.gameLink);
+    if (thumbUrl){
+      const img = document.createElement('img'); img.src = thumbUrl;
+      img.alt = data.name + ' thumbnail';
+      img.onerror = ()=>{ thumbDiv.innerText = 'BETA'; }
       thumbDiv.appendChild(img);
     } else {
-      thumbDiv.textContent = "BETA";
-      thumbDiv.style.justifyContent="center"; thumbDiv.style.fontWeight="800";
+      thumbDiv.innerText = 'BETA';
     }
+    // meta
+    const meta = document.createElement('div'); meta.className='meta';
+    const left = document.createElement('div'); left.className='left';
+    const h2 = document.createElement('h2'); h2.innerText = data.name;
+    const sub = document.createElement('div'); sub.className='sub'; sub.innerText = `${data.created} • ${data.category}`;
+    left.appendChild(h2); left.appendChild(sub);
+    meta.appendChild(left);
+    // actions
+    const actions = document.createElement('div'); actions.className='actions';
+    const btnRaw = document.createElement('button'); btnRaw.className='btn'; btnRaw.innerText='Raw';
+    btnRaw.onclick = ()=> handleActionRequest(data.id, 'raw', btnRaw);
+    const btnCopy = document.createElement('button'); btnCopy.className='btn'; btnCopy.innerText='Copy';
+    btnCopy.onclick = ()=> handleActionRequest(data.id, 'copy', btnCopy);
+    const btnDownload = document.createElement('button'); btnDownload.className='btn'; btnDownload.innerText='Download';
+    btnDownload.onclick = ()=> handleActionRequest(data.id, 'download', btnDownload);
+    const btnGame = document.createElement('button'); btnGame.className='btn'; btnGame.innerText='Game';
+    btnGame.onclick = ()=> {
+      // open game link
+      if (data.gameLink) window.open(data.gameLink, '_blank');
+      else toast('No game link',1000);
+    };
+    actions.appendChild(btnRaw); actions.appendChild(btnCopy); actions.appendChild(btnDownload); actions.appendChild(btnGame);
 
-    const beta = document.createElement("div");
-    beta.className = "beta";
-    beta.innerText = "BETA";
+    // status
+    const stat = document.createElement('div'); stat.className='status';
+    stat.innerText = isUnlockedReady(data.id) ? 'Unlocked — ready' : 'Locked';
+    stat.dataset.id = data.id;
 
-    const titleRow = document.createElement("div");
-    titleRow.className = "meta";
-    const title = document.createElement("div");
-    title.className = "title"; title.textContent = s.name;
-    const small = document.createElement("div"); small.className="small"; small.textContent = `${s.created} • ${s.category}`;
-    titleRow.appendChild(title); titleRow.appendChild(small);
-
-    const btnRow = document.createElement("div");
-    btnRow.className = "buttons";
-    // Raw
-    const rawBtn = document.createElement("button");
-    rawBtn.textContent = "Raw";
-    rawBtn.onclick = ()=> tryUseAction(s.id,"raw");
-    // Copy
-    const copyBtn = document.createElement("button");
-    copyBtn.textContent = "Copy";
-    copyBtn.onclick = ()=> tryUseAction(s.id,"copy");
-    // Download
-    const dlBtn = document.createElement("button");
-    dlBtn.textContent = "Download";
-    dlBtn.onclick = ()=> tryUseAction(s.id,"download");
-    // Game
-    const gameBtn = document.createElement("button");
-    gameBtn.textContent = "Game";
-    gameBtn.onclick = ()=> window.open(s.gameLink,"_blank");
-
-    // disable buttons if not unlocked
-    const isUnlocked = !!unlocked[s.id];
-    if(!isUnlocked){
-      rawBtn.disabled = copyBtn.disabled = dlBtn.disabled = false; // we allow click to prompt unlock
-    }
-
-    btnRow.appendChild(rawBtn);
-    btnRow.appendChild(copyBtn);
-    btnRow.appendChild(dlBtn);
-    btnRow.appendChild(gameBtn);
-
-    // assemble
-    div.appendChild(beta);
-    div.appendChild(thumbDiv);
-    div.appendChild(titleRow);
-    div.appendChild(btnRow);
-
-    // if unlocked show small label
-    if(isUnlocked){
-      const lab = document.createElement("div");
-      lab.style.color="#9ff7b2";lab.style.fontSize=".82rem";lab.style.marginTop="6px";lab.textContent="Unlocked — ready";
-      div.appendChild(lab);
-    }
-
-    grid.appendChild(div);
+    card.appendChild(thumbDiv); card.appendChild(meta); card.appendChild(actions); card.appendChild(stat);
+    card.dataset.name = data.name.toLowerCase();
+    card.dataset.category = data.category;
+    grid.appendChild(card);
   });
 }
 
-/* tryUseAction: if already unlocked -> perform; else open modal to unlock */
-function tryUseAction(id,action){
-  // check cooldown
-  const until = Number(localStorage.getItem(COOLDOWN_KEY) || 0);
-  const now = Date.now();
-  if(now < until){
-    const left = Math.ceil((until-now)/1000);
-    alert(`Anti-bypass cooldown active. Try again in ${left}s.`);
+/* Check if unlocked ready - for demo we simply check not locked; can be extended */
+function isUnlockedReady(id){
+  // placeholder: always ready unless global lock
+  return Date.now() > lockedUntil;
+}
+
+/* Filter search + category */
+function filterScripts(){
+  const q = (document.getElementById('searchInput').value||'').toLowerCase().trim();
+  const cat = (document.getElementById('catSelect').value||'all');
+  const cards = grid.querySelectorAll('.card');
+  cards.forEach(c=>{
+    const name = c.dataset.name || '';
+    const ccat = c.dataset.category || '';
+    const matchQ = !q || name.includes(q);
+    const matchC = cat === 'all' || ccat === cat;
+    c.style.display = (matchQ && matchC) ? '' : 'none';
+  });
+}
+
+/* ========== Action flow ========== */
+/* handleActionRequest: prepare pendingAction and show service popup */
+function handleActionRequest(id, action, btnEl){
+  if (Date.now() < lockedUntil){
+    const sec = Math.ceil((lockedUntil - Date.now())/1000);
+    toast(`Anti-bypass lock active: ${sec}s`, 2200);
     return;
   }
 
-  if(unlocked[id]){
-    // already unlocked -> perform immediately
-    performAction(id,action);
-    return;
-  }
+  const data = scriptsData.find(s=>s.id===id);
+  if (!data) return toast('Script not found',1200);
 
-  // set pending and open modal
-  pending.id = id; pending.action = action;
-  openModalFor(id);
+  // set pending
+  pendingAction = { id, action, btnEl, startRedirectAt:0, step:'select-service' };
+
+  // show small service popup (type B)
+  showServicePopup(data);
 }
 
-/* open modal */
-function openModalFor(id){
-  overlay.style.display="flex";
-  document.getElementById("modalTitle").textContent = `Unlock "${(SCRIPTS.find(x=>x.id===id)||{}).name}" — pick a service`;
-}
-
-/* close modal */
-function closeModal(){ overlay.style.display="none"; pending.id=null; pending.action=null; }
-
-/* service buttons */
-document.getElementById("srvCancel").onclick = ()=> closeModal();
-document.getElementById("srvLinkvertise").onclick = ()=> startUnlock("linkvertise");
-document.getElementById("srvLootlabs").onclick   = ()=> startUnlock("lootlabs");
-
-/* startUnlock: redirect to service, then monitor return time */
-function startUnlock(service){
-  if(!pending.id) return closeModal();
-  const scriptObj = SCRIPTS.find(s=>s.id===pending.id);
-  if(!scriptObj){ closeModal(); return; }
-
-  const url = (scriptObj.unlock && scriptObj.unlock[service]) || null;
-  if(!url){ alert("Unlock URL not configured for this script/service."); closeModal(); return; }
-
-  // show checking overlay immediately (simulates anti-bypass checks)
-  overlay.style.display="none";
-  showChecking("Redirecting to unlock service...");
-
-  // record the time we opened new tab
-  const openTime = Date.now();
-  // open the external link in new tab
-  const w = window.open(url,"_blank");
-
-  // now wait for user to return focus. We'll set a promise that resolves on focus
-  // if user returns too quick (e.g. < MIN_RETURN_MS) => treat as bypass
-  const MIN_RETURN_MS = 3500;   // minimum realistic time that indicates proper user flow (tweakable)
-  const BYPASS_COOLDOWN_MS = 60*1000; // 60s cooldown on bypass
-
-  // animate progress for 2.2s then check
-  animateChecking(2200).then(()=>{
-    // now set a handler for window focus
-    let handled = false;
-    function onFocus(){
-      if(handled) return;
-      handled = true;
-      window.removeEventListener("focus", onFocus);
-      const delta = Date.now() - openTime;
-      hideChecking();
-      if(delta < MIN_RETURN_MS){
-        // bypass suspected
-        localStorage.setItem(COOLDOWN_KEY, String(Date.now()+BYPASS_COOLDOWN_MS));
-        alert("Bypass detected — UI locked for 60 seconds.");
-        pending.id = null; pending.action = null;
-        // re-render to reflect lock
-        render();
-      } else {
-        // success: mark unlocked and perform pending action
-        unlocked[pending.id] = { at: Date.now(), service: service };
-        localStorage.setItem(UNLOCK_KEY, JSON.stringify(unlocked));
-        // show success toast
-        alert("Unlock successful! Script ready.");
-        // perform the actual action (raw/copy/download)
-        performAction(pending.id, pending.action);
-        pending.id = null; pending.action = null;
-        render();
-      }
-    }
-
-    // user might never focus back (closed tab). We'll also attach a fallback timeout
-    window.addEventListener("focus", onFocus);
-    // fallback: after 12s, assume success (user used service)
-    setTimeout(()=>{
-      if(!handled){
-        handled=true; window.removeEventListener("focus", onFocus);
-        hideChecking();
-        unlocked[pending.id] = { at: Date.now(), service: service };
-        localStorage.setItem(UNLOCK_KEY, JSON.stringify(unlocked));
-        alert("Assumed unlock complete (timeout). Script ready.");
-        performAction(pending.id, pending.action);
-        pending.id = null; pending.action = null;
-        render();
-      }
-    },12000);
-  });
-}
-
-/* performAction: raw/copy/download for unlocked script */
-function performAction(id,action){
-  const s = SCRIPTS.find(x=>x.id===id);
-  if(!s) return alert("Script not found.");
-  if(!unlocked[id]) return alert("Script locked. Unlock first.");
-
-  if(action==="raw"){
-    const w = window.open("", "_blank");
-    w.document.write(`<pre style="white-space:pre-wrap;font-family:monospace;background:#0a0012;color:#fff;padding:18px;border-radius:10px">${escapeHtml(s.script)}</pre>`);
-    w.document.title = `${s.name} — Raw`;
-  } else if(action==="copy"){
-    navigator.clipboard.writeText(s.script).then(()=> {
-      flashButtonText(id,"Copy","✅ Copied!");
-    }, ()=> alert("Copy failed — allow clipboard permission."));
-  } else if(action==="download"){
-    const blob = new Blob([s.script], {type:"text/plain"});
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `${s.name.replace(/\s+/g,"_")}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-  }
-}
-
-/* small UI helper: change copy button text briefly */
-function flashButtonText(id,btnText,alt){
-  const card = Array.from(document.querySelectorAll(".card")).find(c=>c.dataset.id===id);
-  if(!card) return;
-  const btn = Array.from(card.querySelectorAll("button")).find(b=>b.textContent.trim()===btnText);
-  if(!btn) return;
-  const old = btn.textContent;
-  btn.textContent = alt;
-  setTimeout(()=> btn.textContent = old, 1100);
-}
-
-/* Checking overlay helpers */
-function showChecking(msg){
-  checking.style.display="flex"; checkingMsg.textContent = msg || "Checking...";
-  checkingFill.style.width = "0%";
-}
-function hideChecking(){
-  checking.style.display="none"; checkingFill.style.width = "0%";
-}
-function animateChecking(ms){
-  return new Promise(resolve=>{
-    let start = Date.now();
-    const tick = setInterval(()=>{
-      const p = Math.min(100, ((Date.now()-start)/ms)*100);
-      checkingFill.style.width = p+"%";
-      if(p>=100){ clearInterval(tick); setTimeout(resolve,150); }
-    },50);
-  });
-}
-
-/* simple escaping for raw output */
-function escapeHtml(text){
-  return text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-}
-
-/* init events */
-search.addEventListener("input", render);
-categorySel.addEventListener("change", render);
-
-/* cleanup duplicate UI check: ensure only one grid render */
-(function removeDuplicateUI(){
-  // If someone accidentally included same HTML twice, we try to avoid duplicates by checking window flag
-  if(window.__lanhub_page_loaded) {
-    console.warn("LanHub page already loaded — not re-initializing.");
-  }
-  window.__lanhub_page_loaded = true;
-})();
-
-/* render initially */
-render();
-
-/* optional: expose SCRIPTS to console for easy editing */
-window.LanHubScripts = SCRIPTS;
-
-</script>
-</body>
-</html>n(`https://www.roblox.com/games/${linkOrId}`, "_blank");
-    else window.open(decodeURIComponent(linkOrId), "_blank");
-  }catch(e){ console.warn(e) }
-}
-
-/* main entry: Raw/Copy/Download */
-function handleAction(action, id, btnEl){
-  const data = scriptsData.find(x=>x.id===id);
-  if(!data) return alert("Script not found");
-  // show service selector popup
-  showServiceSelectionPopup(data, action, btnEl);
-}
-
-/* Show popup; user chooses service (linkvertise/lootlabs etc) */
-function showServiceSelectionPopup(data, action, btnEl){
+/* showServicePopup: small popup with service choices (we only include Direct Link for now) */
+function showServicePopup(data){
   removeOverlay();
-  const ov = document.createElement("div");
-  ov.className = "overlay";
-  ov.id = "lanhub-overlay";
-  ov.innerHTML = `
-    <div class="popup" role="dialog" aria-modal="true">
-      <h4>Select service for: ${escapeHtml(data.name)}</h4>
-      <div class="small-note">Choose a service to unlock the script. (demo uses preconfigured direct links)</div>
-      <div class="svc-buttons">
-        <div class="svc" data-svc="linkvertise">Linkvertise</div>
-        <div class="svc" data-svc="lootlabs">LootLabs</div>
-        <div class="svc" data-svc="direct">Direct (no unlock)</div>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
-        <button class="btn secondary" id="cancelPopup">Cancel</button>
-      </div>
+  const ov = document.createElement('div'); ov.className='overlay'; ov.id='lanhub-overlay';
+  const p = document.createElement('div'); p.className='popup';
+  p.innerHTML = `<h3>Choose Unlock Method</h3>
+    <p>Select Direct Link to unlock this script. After completion, return to this page and press "I've returned" (or switch back to this tab).</p>
+    <div class="popup-row">
+      <button id="directBtn">Direct Link</button>
+      <button id="cancelBtn" style="background:#3a004f">Cancel</button>
     </div>
-  `;
-  document.body.appendChild(ov);
+    <div class="small-muted">Service: DirectLink (per-script)</div>`;
 
-  // attach handlers
-  ov.querySelectorAll(".svc").forEach(el=>{
-    el.addEventListener("click",()=>{
-      const svc = el.getAttribute("data-svc");
-      generateLinkAndProceed(data, svc, action, btnEl);
-    });
-  });
-  ov.querySelector("#cancelPopup").addEventListener("click", removeOverlay);
-  // close when clicking outside
-  ov.addEventListener("click", (e)=>{ if(e.target===ov) removeOverlay(); });
+  ov.appendChild(p); overlayRoot.style.display='block'; overlayRoot.appendChild(ov);
+
+  document.getElementById('directBtn').onclick = ()=>{
+    // open direct link in new tab and start checking
+    if (!data.directLink){
+      toast('No directLink configured for this script',1600);
+      closeOverlay();
+      return;
+    }
+    // record redirect start
+    pendingAction.startRedirectAt = Date.now();
+    pendingAction.step = 'redirected';
+    // open external link
+    window.open(data.directLink, '_blank');
+    // replace popup with checking UI
+    showCheckingPopup();
+    // attach focus/visibility listeners to auto-detect return
+    attachReturnListeners();
+  };
+
+  document.getElementById('cancelBtn').onclick = ()=>{
+    pendingAction = null;
+    closeOverlay();
+  };
 }
 
-/* Remove overlay */
-function removeOverlay(){
-  const ex = document.getElementById("lanhub-overlay");
-  if(ex) ex.remove();
-}
-
-/* generate link (client-side demo) and proceed */
-function generateLinkAndProceed(data, service, action, btnEl){
-  // show small transition on btn
-  if(btnEl){
-    const original = btnEl.textContent;
-    btnEl.textContent = "Opening...";
-    setTimeout(()=> btnEl.textContent = original, 1500);
-  }
-
-  // Determine URL:
-  // - If script has explicit serviceLinks[service], use it
-  // - Else fallback to direct link (we'll craft a small encode)
-  let finalUrl = null;
-  if(data.serviceLinks && data.serviceLinks[service]) finalUrl = data.serviceLinks[service];
-  else if(service === "direct") {
-    // show raw directly in new window (no redirect)
-    finalUrl = null;
-  } else {
-    // fallback construct (demo)
-    finalUrl = `https://direct-link.net/fallback/${encodeURIComponent(data.id)}?svc=${service}`;
-  }
-
-  // Simulate server delay and redirect:
+/* showCheckingPopup: small anti-bypass checking UI */
+function showCheckingPopup(){
   removeOverlay();
-  // If there is a finalUrl, open it in new tab to simulate "unlock flow"
-  if(finalUrl){
-    // open in new tab then after a short delay open raw/download/copy result
-    window.open(finalUrl, "_blank");
-    setTimeout(()=> proceedAfterUnlock(data, action), 900); // after user comes back
-  } else {
-    // direct: proceed immediately
-    proceedAfterUnlock(data, action);
+  const ov = document.createElement('div'); ov.className='overlay'; ov.id='lanhub-overlay';
+  const p = document.createElement('div'); p.className='popup';
+  p.innerHTML = `<h3>LanHub Anti Bypass Detection</h3>
+    <div class="checking-box">
+      <div class="spinner"></div>
+      <p>Checking unlock... please return after completing the unlock page.</p>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <button id="returnedBtn" style="flex:1;background:#2f6f2f">I've returned</button>
+        <button id="abortBtn" style="flex:1;background:#4a1d4a">Abort</button>
+      </div>
+      <div class="small-muted">This protects against automated bypass. If you bypass, UI will be locked 60s.</div>
+    </div>`;
+  ov.appendChild(p); overlayRoot.style.display='block'; overlayRoot.appendChild(ov);
+
+  document.getElementById('returnedBtn').onclick = ()=> handleReturn();
+  document.getElementById('abortBtn').onclick = ()=> { pendingAction = null; detachReturnListeners(); closeOverlay(); };
+}
+
+/* attach listeners to detect user returning (visibilitychange and focus) */
+let _visHandler = null, _focusHandler = null;
+function attachReturnListeners(){
+  _visHandler = ()=>{ if (!document.hidden) { handleReturn(); } };
+  _focusHandler = ()=>{ handleReturn(); };
+  document.addEventListener('visibilitychange', _visHandler);
+  window.addEventListener('focus', _focusHandler);
+}
+
+/* detach listeners */
+function detachReturnListeners(){
+  if (_visHandler) document.removeEventListener('visibilitychange', _visHandler);
+  if (_focusHandler) window.removeEventListener('focus', _focusHandler);
+  _visHandler = null; _focusHandler = null;
+}
+
+/* handleReturn: user returned -> validate time */
+function handleReturn(){
+  if (!pendingAction || pendingAction.step!=='redirected') return;
+  detachReturnListeners();
+  const now = Date.now();
+  const elapsed = now - (pendingAction.startRedirectAt || now);
+  // if elapsed < threshold => bypass
+  if (elapsed < BYPASS_THRESHOLD_MS){
+    // lock UI
+    lockedUntil = Date.now() + LOCK_DURATION_MS;
+    closeOverlay();
+    toast('Bypass detected — UI locked for 60s', 2500);
+    // update statuses visually
+    updateStatuses();
+    pendingAction = null;
+    return;
   }
+  // success
+  closeOverlay();
+  toast('Unlock confirmed — performing action...', 1400);
+  // perform pending action after short delay
+  setTimeout(()=> performPendingAction(pendingAction), 700);
 }
 
-/* After unlock flow, perform action: raw / copy / download */
-function proceedAfterUnlock(data, action){
-  if(action === "raw"){
-    openRawViewer(data);
-  } else if(action === "copy"){
-    navigator.clipboard.writeText(data.script || "");
-    showToast("✅ Script copied to clipboard");
-  } else if(action === "download"){
-    const blob = new Blob([data.script || ""], {type:"text/plain"});
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `${data.name.replace(/\s+/g,"_")}.txt`;
-    a.click();
-    showToast("⬇️ Download started");
+/* performPendingAction executes raw/copy/download */
+function performPendingAction(p){
+  if (!p) return;
+  const data = scriptsData.find(s=>s.id===p.id);
+  if (!data) { toast('Script data missing',1200); return; }
+
+  if (p.action === 'raw'){
+    // open raw script in new window (safe)
+    const w = window.open('', '_blank');
+    const safeCode = escapeHtml(data.script);
+    w.document.write(`<body style="background:#0a0012;color:#fff;padding:18px;font-family:monospace;"><h2 style="color:${'#c293ff'};">LanHub Raw - ${escapeHtml(data.name)}</h2><pre style="background:#120016;padding:12px;border-radius:10px;color:#fff;">${safeCode}</pre></body>`);
+    w.document.title = `LanHub - ${data.name} (raw)`;
+  } else if (p.action === 'copy'){
+    navigator.clipboard.writeText(data.script).then(()=> {
+      toast('Script copied to clipboard ✅',1400);
+    }).catch(()=> {
+      toast('Copy failed',1200);
+    });
+  } else if (p.action === 'download'){
+    const blob = new Blob([data.script], {type:'text/plain'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${data.name.replace(/\s+/g,'_')}.txt`;
+    document.body.appendChild(a); a.click(); a.remove();
+    toast('Download started',1200);
   }
+  pendingAction = null;
 }
 
-/* Raw viewer (new window modal) */
-function openRawViewer(data){
-  const w = window.open("", "_blank");
-  const safeScript = escapeHtml(data.script || "");
-  w.document.write(`
-    <!doctype html>
-    <html>
-    <head>
-      <meta charset="utf-8"/>
-      <title>Raw - ${safeScript && data.name ? escapeHtml(data.name) : "script"}</title>
-      <style>body{background:#040014;color:#fff;font-family:monospace;padding:18px}pre{white-space:pre-wrap;word-break:break-word;background:#120021;padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)}</style>
-    </head>
-    <body>
-      <h2 style="color:${"#c293ff"}">${escapeHtml(data.name)}</h2>
-      <div style="font-size:13px;color:#bbb">Created: ${escapeHtml(data.created)} | Category: ${escapeHtml(data.category||"")}</div>
-      <hr style="margin:10px 0 14px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)"/>
-      <pre>${safeScript}</pre>
-    </body>
-    </html>
-  `);
+/* remove overlay */
+function removeOverlay(){
+  overlayRoot.innerHTML = ''; overlayRoot.style.display='none';
 }
 
-/* Simple toast */
-function showToast(text){
-  const t = document.createElement("div");
-  t.style.position="fixed";t.style.right="18px";t.style.bottom="18px";t.style.background="rgba(0,0,0,0.6)";
-  t.style.color="#fff";t.style.padding="10px 14px";t.style.borderRadius="10px";t.style.zIndex=99999;
-  t.textContent = text;
-  document.body.appendChild(t);
-  setTimeout(()=>{ t.style.transition="all .25s"; t.style.opacity=0; setTimeout(()=>t.remove(),250) }, 1500);
+/* close overlay wrapper */
+function closeOverlay(){ removeOverlay(); detachReturnListeners(); }
+
+/* escapeHtml helper for raw display */
+function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* update statuses (locked or ready) */
+function updateStatuses(){
+  const statuses = document.querySelectorAll('.status');
+  statuses.forEach(st=>{
+    const id = st.dataset.id;
+    st.innerText = (Date.now() > lockedUntil) ? 'Unlocked — ready' : `Locked until ${Math.ceil((lockedUntil-Date.now())/1000)}s`;
+  });
 }
 
-/* ----- bulk actions (demo) ----- */
-function openAllRaw(){
-  scriptsData.forEach(d=> openRawViewer(d));
-}
-function downloadAll(){
-  alert("Demo: download all not implemented (server zip recommended).");
-}
-
-/* prefill search / category */
-document.getElementById("searchInput").addEventListener("keydown", (e)=>{
-  if(e.key === "Escape") { e.target.value=""; filterScripts(); }
-});
+/* Periodic UI updates */
+setInterval(updateStatuses, 800);
 
 /* initial render */
 renderCards();
@@ -621,4 +434,4 @@ filterScripts();
 
 </script>
 </body>
-  </html>
+</html>
