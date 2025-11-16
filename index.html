@@ -1,298 +1,516 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LanHub - Script Library</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Montserrat", sans-serif;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>LanHub - Script Library</title>
+<link rel="preconnect" href="https://www.roblox.com"/>
+<style>
+  :root{
+    --bg1:#0b0010; --bg2:#190024; --accent:#a855f7; --card:#1a0128;
+    --muted:#bdbdbd; --glass: rgba(20,8,30,0.65);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;padding:24px;
+    font-family: "Montserrat", system-ui, Arial;
+    background:linear-gradient(160deg,var(--bg1),var(--bg2));
+    color:#fff; -webkit-font-smoothing:antialiased;
+    display:flex;flex-direction:column;align-items:center;
+  }
 
-    body {
-      background: linear-gradient(160deg, #0b0010, #190024);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px 10px;
-      overflow-x: hidden;
-    }
+  header{width:100%;max-width:960px;display:flex;align-items:center;gap:12px;margin-bottom:18px}
+  .brand{display:flex;flex-direction:column}
+  h1{font-size:20px;margin:0;color:#d6b3ff;text-shadow:0 0 8px rgba(168,85,247,0.18)}
+  .sub{font-size:12px;color:var(--muted)}
+  .controls{margin-left:auto;display:flex;gap:10px;align-items:center}
 
-    h1 {
-      font-size: 1.7rem;
-      color: #c293ff;
-      text-shadow: 0 0 10px #a855f7;
-      margin-bottom: 15px;
-      text-align: center;
-      animation: fadeIn 0.8s ease;
-    }
+  .search-row{width:100%;max-width:960px;display:flex;gap:10px;margin-bottom:18px}
+  .search-container{display:flex;gap:8px;width:100%;max-width:640px}
+  .search-container input, .search-container select{
+    flex:1;padding:12px 14px;border-radius:12px;border:none;background:rgba(40,0,70,0.6);color:#fff;
+    outline:none;font-size:14px;box-shadow:0 2px 10px rgba(0,0,0,0.25);
+  }
+  .search-container select{flex:0.5;background:rgba(70,0,120,0.5);cursor:pointer;border:1px solid rgba(168,85,247,0.12)}
+  .search-btn{padding:10px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,#6b21a8,#9333ea);cursor:pointer;color:#fff}
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+  .layout{width:100%;max-width:960px;display:flex;gap:20px}
+  /* main column */
+  .col-main{flex:1}
+  .card-list{display:flex;flex-direction:column;gap:14px}
+  .card{background:var(--glass);border-radius:14px;padding:12px;border:1px solid rgba(168,85,247,0.08);display:flex;gap:12px;align-items:flex-start;backdrop-filter:blur(6px)}
+  .thumb{width:140px;height:96px;border-radius:10px;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,#3a0060,#6b21a8);display:flex;align-items:center;justify-content:center}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .beta-badge{position:relative;top:-70px;left:8px;background:rgba(0,0,0,0.35);padding:4px 8px;border-radius:8px;font-size:12px;color:#e6d6ff}
+  .card-content{flex:1;display:flex;flex-direction:column}
+  .card h2{margin:0;font-size:16px;color:#f1d9ff}
+  .meta{font-size:12px;color:var(--muted);margin-top:6px}
+  .tags{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+  .tag{font-size:11px;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.02)}
+  .actions{display:flex;gap:8px;margin-top:10px}
+  .btn{padding:8px 10px;border-radius:8px;border:none;background:linear-gradient(90deg,#6b21a8,#9333ea);color:white;cursor:pointer;font-weight:600}
+  .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06)}
+  .btn.small{padding:6px 8px;font-size:13px}
 
-    /* Popup overlay */
-    #popupOverlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
+  /* right column (filters) */
+  .col-side{width:240px;display:flex;flex-direction:column;gap:12px}
+  .panel{background:var(--card);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+  .panel h3{margin:0;font-size:14px;color:#d6b3ff}
+  .panel .group{margin-top:8px;display:flex;flex-direction:column;gap:8px}
 
-    /* Popup box */
-    #popupBox {
-      background: #1a0028;
-      padding: 22px;
-      border-radius: 16px;
-      width: 90%;
-      max-width: 350px;
-      border: 1px solid #9333ea;
-      box-shadow: 0 0 15px #9333ea;
-      text-align: center;
-      animation: fadeIn 0.3s ease;
-    }
+  footer{margin-top:20px;color:var(--muted);font-size:13px;text-align:center;width:100%;max-width:960px;padding-bottom:36px}
 
-    #popupBox h3 {
-      margin-bottom: 12px;
-      font-size: 1.2rem;
-      color: #dcb8ff;
-    }
+  /* popup service selector */
+  .overlay{position:fixed;inset:0;background:rgba(6,6,8,0.6);display:flex;align-items:center;justify-content:center;z-index:9999}
+  .popup{width:360px;max-width:92%;background:linear-gradient(180deg,#0e0313,#130019);padding:18px;border-radius:12px;border:1px solid rgba(168,85,247,0.12);box-shadow:0 10px 40px rgba(0,0,0,0.6)}
+  .popup h4{margin:0 0 8px 0;color:#e6d6ff}
+  .svc-buttons{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+  .svc{flex:1;padding:10px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.02);cursor:pointer;text-align:center}
+  .svc:hover{box-shadow:0 0 14px rgba(168,85,247,0.18);transform:translateY(-2px)}
+  .small-note{font-size:12px;color:var(--muted);margin-top:8px}
 
-    .popup-btns button {
-      width: 100%;
-      padding: 11px;
-      margin: 6px 0;
-      border-radius: 10px;
-      border: none;
-      background: #6b21a8;
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
-      transition: 0.25s;
-    }
+  /* raw viewer */
+  .raw-window{width:90%;max-width:900px;height:70vh;background:#050010;color:#fff;padding:14px;border-radius:10px;overflow:auto;font-family:monospace;font-size:13px}
 
-    .popup-btns button:hover {
-      background: #9333ea;
-      transform: scale(1.05);
-    }
-
-    .cancelBtn {
-      background: #3a004f !important;
-    }
-
-    .search-container {
-      width: 100%;
-      max-width: 400px;
-      margin-bottom: 20px;
-    }
-
-    .search-container input {
-      width: 100%;
-      padding: 12px 15px;
-      border-radius: 14px;
-      border: none;
-      background: rgba(50, 0, 90, 0.7);
-      color: #fff;
-      font-size: 1rem;
-    }
-
-    .card-container {
-      width: 100%;
-      max-width: 450px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .card {
-      background: rgba(25, 0, 40, 0.8);
-      border: 1px solid rgba(168, 85, 247, 0.3);
-      border-radius: 20px;
-      padding: 15px;
-      box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .beta-thumb {
-      width: 100%;
-      height: 180px;
-      border-radius: 12px;
-      margin-bottom: 10px;
-      background: linear-gradient(135deg, #3a0060, #6b21a8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      color: #d6b3ff;
-      font-weight: bold;
-    }
-
-    .card h2 {
-      font-size: 1.2rem;
-      color: #d6b3ff;
-      margin-bottom: 6px;
-    }
-
-    .date {
-      font-size: 0.9rem;
-      color: #bbb;
-      margin-bottom: 12px;
-    }
-
-    .buttons {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      margin-top: auto;
-    }
-
-    button {
-      flex: 1;
-      background: #6b21a8;
-      border: none;
-      border-radius: 10px;
-      padding: 10px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    footer {
-      margin-top: 25px;
-      color: #aaa;
-      font-size: 0.9rem;
-      text-align: center;
-      padding-bottom: 15px;
-    }
-  </style>
+  /* responsive */
+  @media (max-width:850px){
+    .layout{flex-direction:column}
+    .col-side{width:100%}
+    .thumb{width:120px;height:84px}
+  }
+</style>
 </head>
 <body>
-
-  <h1>LanHub Script Library</h1>
-
-  <!-- POPUP -->
-  <div id="popupOverlay">
-    <div id="popupBox">
-      <h3>Choose Unlock Method</h3>
-      <div class="popup-btns">
-        <button onclick="redirectLinkvertise()">Linkvertise</button>
-        <button class="cancelBtn" onclick="closePopup()">Cancel</button>
-      </div>
+  <header>
+    <div class="brand">
+      <h1>LanHub Script Library</h1>
+      <div class="sub">Mobile-first · scripts collection · Beta thumbnails</div>
     </div>
+
+    <div class="controls">
+      <div style="font-size:13px;color:var(--muted)">Multi-service redirect</div>
+    </div>
+  </header>
+
+  <div class="search-row">
+    <div class="search-container">
+      <input id="searchInput" placeholder="Search scripts, games, categories..." oninput="filterScripts()" />
+      <select id="categoryFilter" onchange="filterScripts()">
+        <option value="">All categories</option>
+      </select>
+    </div>
+    <button class="search-btn" onclick="clearFilters()">Reset</button>
   </div>
 
-  <div class="search-container">
-    <input id="searchInput" type="text" placeholder="🔍 Search scripts..." oninput="filterScripts()">
-  </div>
+  <div class="layout">
+    <main class="col-main">
+      <div id="cardList" class="card-list"></div>
+    </main>
 
-  <div class="card-container" id="cardContainer"></div>
+    <aside class="col-side">
+      <div class="panel">
+        <h3>Filters</h3>
+        <div class="group">
+          <label style="font-size:12px;color:var(--muted)">Category</label>
+          <select id="sideCategory" onchange="filterBySideCategory()">
+            <option value="">All</option>
+          </select>
+
+          <label style="font-size:12px;color:var(--muted)">Sort</label>
+          <select id="sortBy" onchange="renderCards()">
+            <option value="new">Newest</option>
+            <option value="name">Name A-Z</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Quick actions</h3>
+        <div class="group">
+          <button class="btn" onclick="openAllRaw()">Open all Raw (new tab)</button>
+          <button class="btn secondary" onclick="downloadAll()">Download all (zip?)</button>
+          <div class="small-note">Note: this demo uses client-side link mapping. Real unlock flow needs server integration.</div>
+        </div>
+      </div>
+    </aside>
+  </div>
 
   <footer>
-    © 2025 <strong>LanHub</strong> — All Rights Reserved.<br>
-    <span style="font-size:0.8rem;">Designed by LanHubDev</span>
+    © 2025 LanHub — All Rights Reserved
   </footer>
 
-<script>
-let pendingAction = "";
-let pendingId = "";
+  <!-- popup overlay -->
+  <div id="overlay" style="display:none"></div>
 
+<script>
+/**
+ * LanHub full single-file implementation
+ * - Scripts data below (id, name, created, category, gameLink or gameId, serviceLinks)
+ * - Clicking Raw/Copy/Download opens service selector
+ * - Service selector generates final URL (client-side mapping) and opens new tab, then shows raw
+ *
+ * Notes:
+ * - For production: use server-side endpoints to generate linkvertise/lootlabs links and return URLs
+ * - This file is self-contained for testing / local deploy
+ */
+
+if(window.LanHubLoaded){ console.warn("LanHub already loaded"); }
+window.LanHubLoaded = true;
+
+/* -------------------------
+   Data — edit/add scripts here
+   Each script has:
+    id, name, created, category, gameLink (preferred) or gameId, script (raw), services mapping (optional)
+------------------------- */
 const scriptsData = [
   {
-    id: "entrechedww1",
+    id: "entrenchedww1",
     name: "Entrenched WW1",
     created: "Oct 2025",
     category: "Shooter",
-    gameLink: "https://www.roblox.com/games/10157613626/",
-    script: `-- LanHub Script: loadstring(game:HttpGet("https://raw.githubusercontent.com/Wrate/Entrenched-Ww1/refs/heads/main/Main.loader"))()`
+    // gameLink OR gameId (both supported). Use full roblox game URL OR numeric id.
+    gameLink: "https://www.roblox.com/games/3678761576/ENTRENCHED-WW1",
+    script: `-- Entrenched WW1 loader\nloadstring(game:HttpGet("https://raw.githubusercontent.com/Wrate/Entrenched-Ww1/refs/heads/main/Main.loader"))()`,
+    // per-service final direct links (example)
+    serviceLinks: {
+      linkvertise: "https://direct-link.net/1321138/ajnMHzXvEJoy",
+      lootlabs: "https://direct-link.net/1321140/otherExample"
+    }
   },
   {
-    id: "test",
-    name: "test",
+    id: "forest99",
+    name: "99 Night In The Forest",
     created: "Nov 2025",
     category: "Adventure",
-    gameLink: "https://www.roblox.com/games/16898830773/",
-    script: `print("LanHub Script Loaded!")`
+    gameId: "3678761576", // sample; change as needed
+    script: `-- 99 Night In The Forest\nprint("LanHub Forest Script Loaded!")`,
+    serviceLinks: {
+      linkvertise: "https://direct-link.net/1321138/forestExample",
+      lootlabs: "https://direct-link.net/1321138/forestExample2"
+    }
+  },
+  {
+    id: "deadrails",
+    name: "Dead Rails",
+    created: "Oct 2025",
+    category: "Shooter",
+    gameLink: "https://www.roblox.com/games/2338989438/Dead-Rails",
+    script: `-- Dead Rails example loader\nprint("Dead Rails")`,
+    serviceLinks: {
+      linkvertise: "https://direct-link.net/1321138/deadrails1",
+      lootlabs: "https://direct-link.net/1321138/deadrails2"
+    }
   }
 ];
 
-const container = document.getElementById("cardContainer");
+/* Helper: extract numeric gameId from gameLink or gameId field */
+function getGameId(data){
+  if(data.gameId) return String(data.gameId);
+  if(!data.gameLink) return null;
+  // extract last numeric segment
+  try{
+    const u = new URL(data.gameLink);
+    const parts = u.pathname.split("/").filter(Boolean);
+    for(let p of parts){
+      if(/^\d+$/.test(p)) return p;
+    }
+    // maybe URL like /games/<id>/name -> second item
+    if(parts[0]==="games" && /^\d+$/.test(parts[1])) return parts[1];
+  }catch(e){}
+  return null;
+}
 
-function renderCards() {
-  container.innerHTML = "";
-  scriptsData.forEach(data => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
-      <div class="beta-thumb">BETA</div>
-      <h2>${data.name}</h2>
-      <p class="date">Created: ${data.created} | Category: ${data.category}</p>
-      <div class="buttons">
-        <button onclick="requestPopup('${data.id}','raw')">Raw</button>
-        <button onclick="requestPopup('${data.id}','copy')">Copy</button>
-        <button onclick="window.open('${data.gameLink}','_blank')">Game</button>
-      </div>`;
-    container.appendChild(card);
+/* Thumbnail URL builder: use Roblox asset-thumbnail endpoint for game */
+function buildThumbUrl(data){
+  const gid = getGameId(data);
+  if(gid) return `https://www.roblox.com/asset-thumbnail/image?assetId=${gid}&width=420&height=420&format=Png`;
+  return ""; // will show beta card
+}
+
+/* --- Rendering --- */
+const cardList = document.getElementById("cardList");
+const categoryFilter = document.getElementById("categoryFilter");
+const sideCategory = document.getElementById("sideCategory");
+const sortBy = document.getElementById("sortBy");
+
+function uniqueCategories(){
+  const s = new Set();
+  scriptsData.forEach(x=>{
+    if(x.category) s.add(x.category);
+  });
+  return Array.from(s).sort();
+}
+
+/* populate category selectors */
+function setupCategoryFilters(){
+  const cats = uniqueCategories();
+  categoryFilter.innerHTML = `<option value="">All categories</option>` + cats.map(c=>`<option value="${c}">${c}</option>`).join("");
+  sideCategory.innerHTML = `<option value="">All</option>` + cats.map(c=>`<option value="${c}">${c}</option>`).join("");
+}
+setupCategoryFilters();
+
+function renderCards(){
+  cardList.innerHTML = "";
+  let list = Array.from(scriptsData);
+
+  // sorting
+  const sb = sortBy.value;
+  if(sb === "name") list.sort((a,b)=>a.name.localeCompare(b.name));
+  else list.sort((a,b)=> (new Date(b.created).getTime() || 0) - (new Date(a.created).getTime() || 0));
+
+  // render
+  list.forEach(data=>{
+    const r = document.createElement("div");
+    r.className = "card";
+    r.setAttribute("data-name", data.name.toLowerCase());
+    r.setAttribute("data-category", (data.category||"").toLowerCase());
+
+    const thumbUrl = buildThumbUrl(data);
+    const thumbHtml = thumbUrl ? `<img src="${thumbUrl}" alt="${escapeHtml(data.name)}">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#f1d9ff;font-weight:700">BETA</div>`;
+
+    r.innerHTML = `
+      <div class="thumb">${thumbHtml}</div>
+      <div class="card-content">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+          <div>
+            <h2>${escapeHtml(data.name)}</h2>
+            <div class="meta">Created: ${escapeHtml(data.created)} &nbsp;|&nbsp; Category: ${escapeHtml(data.category || "Uncategorized")}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="beta-badge">BETA</div>
+          </div>
+        </div>
+
+        <div class="tags" aria-hidden="true">
+          <div class="tag">${escapeHtml(data.category || "N/A")}</div>
+        </div>
+
+        <div class="actions">
+          <button class="btn small" onclick="handleAction('raw','${data.id}', this)">Raw</button>
+          <button class="btn small secondary" onclick="handleAction('copy','${data.id}', this)">Copy</button>
+          <button class="btn small secondary" onclick="handleAction('download','${data.id}', this)">Download</button>
+          <button class="btn small" style="min-width:62px" onclick="openGame('${encodeURIComponent(data.gameLink||getGameId(data)||"")}')">Game</button>
+        </div>
+      </div>
+    `;
+    cardList.appendChild(r);
   });
 }
-
-function filterScripts() {
-  const val = document.getElementById("searchInput").value.toLowerCase();
-  const cards = container.querySelectorAll(".card");
-
-  cards.forEach((card, index) => {
-    const name = scriptsData[index].name.toLowerCase();
-    card.style.display = name.includes(val) ? "flex" : "none";
-  });
-}
-
-function requestPopup(id, action) {
-  pendingAction = action;
-  pendingId = id;
-  document.getElementById("popupOverlay").style.display = "flex";
-}
-
-function closePopup() {
-  document.getElementById("popupOverlay").style.display = "none";
-}
-
-function redirectLinkvertise() {
-  closePopup();
-
-  // GANTI link Linkvertise lu disini ↓↓↓
-  window.open("https://linkvertise.com/1321138/ajnMHzXvEJoy", "_blank");
-
-  setTimeout(() => {
-    if (pendingAction === "raw") finishRaw(pendingId);
-    if (pendingAction === "copy") finishCopy(pendingId);
-  }, 1800);
-}
-
-function finishRaw(id) {
-  const d = scriptsData.find(x => x.id === id);
-  const win = window.open("", "_blank");
-  win.document.write(`<pre>${d.script}</pre>`);
-}
-
-function finishCopy(id) {
-  const d = scriptsData.find(x => x.id === id);
-  navigator.clipboard.writeText(d.script);
-  alert("Copied!");
-}
-
 renderCards();
-</script>
 
+/* -------------------------
+   Filtering / Search
+------------------------- */
+function filterScripts(){
+  const q = (document.getElementById("searchInput").value||"").toLowerCase().trim();
+  const cat = categoryFilter.value;
+  const cards = cardList.querySelectorAll(".card");
+  let visible = 0;
+  cards.forEach(card=>{
+    const name = card.getAttribute("data-name")||"";
+    const c = card.getAttribute("data-category")||"";
+    const matchQ = q==="" || name.includes(q) || c.includes(q);
+    const matchC = !cat || c === cat.toLowerCase();
+    card.style.display = (matchQ && matchC) ? "flex" : "none";
+    if(matchQ && matchC) visible++;
+  });
+  showNoResults(visible===0);
+}
+function filterBySideCategory(){
+  const v = sideCategory.value;
+  categoryFilter.value = v;
+  filterScripts();
+}
+function clearFilters(){
+  document.getElementById("searchInput").value = "";
+  categoryFilter.value = "";
+  sideCategory.value = "";
+  filterScripts();
+}
+
+/* no results helper */
+function showNoResults(show){
+  let el = document.getElementById("noResults");
+  if(show){
+    if(!el){
+      el = document.createElement("p");
+      el.id = "noResults";
+      el.style.color = "#aaa";
+      el.style.textAlign = "center";
+      el.textContent = "😔 No scripts found...";
+      cardList.appendChild(el);
+    }
+  } else {
+    if(el) el.remove();
+  }
+}
+
+/* -------------------------
+   Action handling + popup service selector
+------------------------- */
+
+const overlay = document.getElementById("overlay");
+
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c])); }
+
+function openGame(linkOrId){
+  if(!linkOrId) return;
+  try{
+    if(/^\d+$/.test(linkOrId)) window.open(`https://www.roblox.com/games/${linkOrId}`, "_blank");
+    else window.open(decodeURIComponent(linkOrId), "_blank");
+  }catch(e){ console.warn(e) }
+}
+
+/* main entry: Raw/Copy/Download */
+function handleAction(action, id, btnEl){
+  const data = scriptsData.find(x=>x.id===id);
+  if(!data) return alert("Script not found");
+  // show service selector popup
+  showServiceSelectionPopup(data, action, btnEl);
+}
+
+/* Show popup; user chooses service (linkvertise/lootlabs etc) */
+function showServiceSelectionPopup(data, action, btnEl){
+  removeOverlay();
+  const ov = document.createElement("div");
+  ov.className = "overlay";
+  ov.id = "lanhub-overlay";
+  ov.innerHTML = `
+    <div class="popup" role="dialog" aria-modal="true">
+      <h4>Select service for: ${escapeHtml(data.name)}</h4>
+      <div class="small-note">Choose a service to unlock the script. (demo uses preconfigured direct links)</div>
+      <div class="svc-buttons">
+        <div class="svc" data-svc="linkvertise">Linkvertise</div>
+        <div class="svc" data-svc="lootlabs">LootLabs</div>
+        <div class="svc" data-svc="direct">Direct (no unlock)</div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
+        <button class="btn secondary" id="cancelPopup">Cancel</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(ov);
+
+  // attach handlers
+  ov.querySelectorAll(".svc").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const svc = el.getAttribute("data-svc");
+      generateLinkAndProceed(data, svc, action, btnEl);
+    });
+  });
+  ov.querySelector("#cancelPopup").addEventListener("click", removeOverlay);
+  // close when clicking outside
+  ov.addEventListener("click", (e)=>{ if(e.target===ov) removeOverlay(); });
+}
+
+/* Remove overlay */
+function removeOverlay(){
+  const ex = document.getElementById("lanhub-overlay");
+  if(ex) ex.remove();
+}
+
+/* generate link (client-side demo) and proceed */
+function generateLinkAndProceed(data, service, action, btnEl){
+  // show small transition on btn
+  if(btnEl){
+    const original = btnEl.textContent;
+    btnEl.textContent = "Opening...";
+    setTimeout(()=> btnEl.textContent = original, 1500);
+  }
+
+  // Determine URL:
+  // - If script has explicit serviceLinks[service], use it
+  // - Else fallback to direct link (we'll craft a small encode)
+  let finalUrl = null;
+  if(data.serviceLinks && data.serviceLinks[service]) finalUrl = data.serviceLinks[service];
+  else if(service === "direct") {
+    // show raw directly in new window (no redirect)
+    finalUrl = null;
+  } else {
+    // fallback construct (demo)
+    finalUrl = `https://direct-link.net/fallback/${encodeURIComponent(data.id)}?svc=${service}`;
+  }
+
+  // Simulate server delay and redirect:
+  removeOverlay();
+  // If there is a finalUrl, open it in new tab to simulate "unlock flow"
+  if(finalUrl){
+    // open in new tab then after a short delay open raw/download/copy result
+    window.open(finalUrl, "_blank");
+    setTimeout(()=> proceedAfterUnlock(data, action), 900); // after user comes back
+  } else {
+    // direct: proceed immediately
+    proceedAfterUnlock(data, action);
+  }
+}
+
+/* After unlock flow, perform action: raw / copy / download */
+function proceedAfterUnlock(data, action){
+  if(action === "raw"){
+    openRawViewer(data);
+  } else if(action === "copy"){
+    navigator.clipboard.writeText(data.script || "");
+    showToast("✅ Script copied to clipboard");
+  } else if(action === "download"){
+    const blob = new Blob([data.script || ""], {type:"text/plain"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `${data.name.replace(/\s+/g,"_")}.txt`;
+    a.click();
+    showToast("⬇️ Download started");
+  }
+}
+
+/* Raw viewer (new window modal) */
+function openRawViewer(data){
+  const w = window.open("", "_blank");
+  const safeScript = escapeHtml(data.script || "");
+  w.document.write(`
+    <!doctype html>
+    <html>
+    <head>
+      <meta charset="utf-8"/>
+      <title>Raw - ${safeScript && data.name ? escapeHtml(data.name) : "script"}</title>
+      <style>body{background:#040014;color:#fff;font-family:monospace;padding:18px}pre{white-space:pre-wrap;word-break:break-word;background:#120021;padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)}</style>
+    </head>
+    <body>
+      <h2 style="color:${"#c293ff"}">${escapeHtml(data.name)}</h2>
+      <div style="font-size:13px;color:#bbb">Created: ${escapeHtml(data.created)} | Category: ${escapeHtml(data.category||"")}</div>
+      <hr style="margin:10px 0 14px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)"/>
+      <pre>${safeScript}</pre>
+    </body>
+    </html>
+  `);
+}
+
+/* Simple toast */
+function showToast(text){
+  const t = document.createElement("div");
+  t.style.position="fixed";t.style.right="18px";t.style.bottom="18px";t.style.background="rgba(0,0,0,0.6)";
+  t.style.color="#fff";t.style.padding="10px 14px";t.style.borderRadius="10px";t.style.zIndex=99999;
+  t.textContent = text;
+  document.body.appendChild(t);
+  setTimeout(()=>{ t.style.transition="all .25s"; t.style.opacity=0; setTimeout(()=>t.remove(),250) }, 1500);
+}
+
+/* ----- bulk actions (demo) ----- */
+function openAllRaw(){
+  scriptsData.forEach(d=> openRawViewer(d));
+}
+function downloadAll(){
+  alert("Demo: download all not implemented (server zip recommended).");
+}
+
+/* prefill search / category */
+document.getElementById("searchInput").addEventListener("keydown", (e)=>{
+  if(e.key === "Escape") { e.target.value=""; filterScripts(); }
+});
+
+/* initial render */
+renderCards();
+filterScripts();
+
+</script>
 </body>
-</html>
+  </html>
