@@ -1,436 +1,462 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>LanHub - Script Library</title>
-<style>
-  :root{
-    --bg-1:#0b0010; --bg-2:#190024; --card:#170022;
-    --accent:#a855f7; --accent-2:#c293ff; --muted:#9b9b9b;
-    --purple:#6b21a8; --btn-hover:#9333ea;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;font-family:Montserrat,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;}
-  html,body{height:100%}
-  body{
-    min-height:100vh;background:linear-gradient(160deg,var(--bg-1),var(--bg-2));
-    color:#fff;padding:18px;display:flex;flex-direction:column;align-items:center;
-  }
-
-  header{width:100%;max-width:720px;margin-bottom:14px}
-  h1{font-size:20px;color:var(--accent-2);text-align:left;text-shadow:0 0 10px var(--accent);letter-spacing:1px}
-
-  .top-controls{display:flex;gap:8px;align-items:center;margin:10px 0 18px 0;width:100%;max-width:720px}
-  .search-wrap{flex:1}
-  .search-wrap input{
-    width:100%;padding:12px 14px;border-radius:12px;border:0;background:rgba(50,0,70,0.6);color:#fff;
-    outline:none;font-size:15px;box-shadow:0 0 8px rgba(168,85,247,0.04);
-  }
-  .search-wrap input:focus{box-shadow:0 0 14px rgba(168,85,247,0.12)}
-  .select-cat{
-    margin-left:8px;padding:10px;border-radius:12px;border:0;background:rgba(80,0,150,0.45);color:#fff;
-    font-size:14px;min-width:120px;
-  }
-
-  .grid{width:100%;max-width:720px;display:flex;flex-direction:column;gap:14px}
-
-  .card{
-    background:linear-gradient(180deg,rgba(30,0,40,0.7),rgba(22,0,34,0.85));
-    border:1px solid rgba(168,85,247,0.18);padding:12px;border-radius:14px;backdrop-filter: blur(6px);
-    display:flex;flex-direction:column;gap:8px;box-shadow:0 4px 18px rgba(0,0,0,0.35);
-  }
-
-  .thumb{
-    width:100%;height:170px;border-radius:10px;overflow:hidden;background:linear-gradient(135deg,#3a0060,#6b21a8);
-    display:flex;align-items:center;justify-content:center;color:var(--accent-2);font-weight:700;letter-spacing:2px;
-  }
-  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
-
-  .meta{display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .meta .left{display:flex;flex-direction:column}
-  .meta h2{font-size:16px;color:#e6ccff;margin-bottom:4px}
-  .meta .sub{font-size:13px;color:var(--muted)}
-
-  .actions{display:flex;gap:8px;margin-top:6px}
-  .btn{flex:1;padding:10px;border-radius:10px;border:0;background:var(--purple);color:#fff;font-weight:700;cursor:pointer}
-  .btn:hover{background:var(--btn-hover);transform:translateY(-2px);box-shadow:0 6px 20px rgba(147,51,234,0.14)}
-
-  .status{font-size:13px;color:#8ef59f;margin-top:6px}
-
-  footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center;width:100%;max-width:720px;padding-bottom:10px}
-
-  /* Popup small box (Anti bypass check + service select) */
-  .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;z-index:9999}
-  .popup{
-    width:90%;max-width:360px;background:#120018;border-radius:12px;padding:18px;border:1px solid rgba(168,85,247,0.24);
-    box-shadow:0 10px 40px rgba(10,0,20,0.6);text-align:center;color:#fff;
-  }
-  .popup h3{color:var(--accent-2);margin-bottom:8px}
-  .popup p{color:#ddd;font-size:14px;margin-bottom:12px}
-  .popup .popup-row{display:flex;gap:8px;justify-content:center;margin-bottom:10px}
-  .popup .popup-row button{flex:1;padding:10px;border-radius:8px;border:0;background:var(--purple);color:#fff}
-  .popup .small-muted{font-size:12px;color:#b6b6b6;margin-top:8px}
-
-  /* Anti-bypass checking box style */
-  .checking-box{display:flex;align-items:center;gap:12px;justify-content:center;flex-direction:column}
-  .spinner{width:48px;height:48px;border-radius:50%;border:4px solid rgba(255,255,255,0.06);border-top-color:var(--accent);animation:spin 0.9s linear infinite}
-  @keyframes spin{to{transform:rotate(360deg)}}
-
-  /* Toast */
-  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:22px;background:#0d0014;padding:10px 14px;border-radius:10px;border:1px solid rgba(168,85,247,0.16);color:#fff;z-index:12000}
-
-  /* responsive */
-  @media (min-width:720px){
-    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-  }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LanHub - Script Library</title>
+  <style>
+    :root{
+      --bg1:#08020a; --bg2:#1b0320; --accent:#a855f7; --muted:#9e9aa6;
+      --card:#15021a; --glass:rgba(255,255,255,0.03);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Montserrat,system-ui,Arial,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2));color:#fff}
+    .app{max-width:720px;margin:18px auto;padding:18px;display:flex;flex-direction:column;gap:14px}
+    header{display:flex;flex-direction:column;gap:12px}
+    h1{font-size:1.4rem;color:#d9b8ff;text-shadow:0 0 10px #a855f7;margin:0;text-align:center}
+    .controls{display:flex;gap:10px;align-items:center;justify-content:center}
+    .search{flex:1;max-width:430px;display:flex;gap:8px}
+    input.search-in{flex:1;padding:10px 12px;border-radius:12px;border:none;background:rgba(40,0,60,0.6);color:#fff;font-size:14px}
+    select.filter{padding:10px 12px;border-radius:12px;border:none;background:rgba(60,0,110,0.45);color:#fff}
+    .card-list{display:flex;flex-direction:column;gap:14px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.15));border:1px solid rgba(168,85,247,0.15);border-radius:14px;padding:12px;backdrop-filter: blur(8px);display:flex;flex-direction:column;gap:8px;position:relative}
+    .thumb{height:160px;border-radius:10px;background:linear-gradient(135deg,#3a0060,#6b21a8);display:flex;align-items:center;justify-content:center;font-weight:700;color:#e9d7ff;letter-spacing:1px}
+    .meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .title{font-size:1.05rem;color:#e8d6ff}
+    .sub{color:var(--muted);font-size:12px}
+    .tag{background:rgba(255,255,255,0.06);padding:6px 8px;border-radius:10px;color:#e7d7ff;font-weight:700;font-size:12px}
+    .actions{display:flex;gap:8px;margin-top:6px}
+    button.btn{flex:1;padding:10px;border-radius:10px;border:none;background:#6b21a8;color:#fff;font-weight:700;cursor:pointer}
+    button.btn:hover{background:#9333ea;transform:translateY(-2px)}
+    .status{font-size:13px;color:#98ffb3;margin-top:6px}
+    footer{margin-top:18px;color:#bdb7c6;font-size:13px;text-align:center;padding:12px 0}
+    /* popup overlay */
+    .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:9999}
+    .popup{width:92%;max-width:420px;background:#140018;border-radius:12px;padding:18px;border:1px solid rgba(168,85,247,0.18);box-shadow:0 10px 30px rgba(0,0,0,0.6)}
+    .popup h3{margin:0 0 8px 0;color:#e6cff8}
+    .popup p{color:#d0c7df;font-size:14px}
+    .popup .pbtns{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+    .popup .pbtns button{padding:10px;border-radius:10px;border:none;background:#6b21a8;color:white;font-weight:700}
+    .small-note{font-size:12px;color:#bdb2d0;margin-top:10px}
+    .hidden{display:none !important}
+    @media(min-width:720px){
+      .app{padding:28px}
+      .card-list{gap:18px}
+      .thumb{height:220px}
+    }
+  </style>
 </head>
 <body>
+  <div class="app" id="app">
+    <header>
+      <h1>LanHub Script Library</h1>
+      <div class="controls">
+        <div class="search">
+          <input id="searchInput" class="search-in" placeholder="🔍 Search scripts..." oninput="filterList()" />
+          <select id="catFilter" class="filter" onchange="filterList()">
+            <option value="all">All categories</option>
+          </select>
+        </div>
+      </div>
+    </header>
 
-<header>
-  <h1>LanHub Script Library</h1>
-  <div class="top-controls">
-    <div class="search-wrap">
-      <input id="searchInput" placeholder="🔍 Search scripts..." oninput="filterScripts()" />
-    </div>
-    <select id="catSelect" class="select-cat" onchange="filterScripts()">
-      <option value="all">All categories</option>
-      <!-- categories added at runtime -->
-    </select>
+    <main>
+      <div id="cardList" class="card-list"></div>
+    </main>
+
+    <footer>© 2025 LanHub — All Rights Reserved.</footer>
   </div>
-</header>
 
-<main class="grid" id="grid"></main>
-
-<footer>© 2025 LanHub — All Rights Reserved.</footer>
-
-<!-- Overlay container (single, won't duplicate) -->
-<div id="overlayRoot" style="display:none"></div>
-
-<!-- Toast root -->
-<div id="toastRoot"></div>
+  <!-- overlay popup -->
+  <div id="overlay" class="overlay" onclick="tryClosePopup(event)">
+    <div class="popup" id="popup">
+      <h3 id="popupTitle">Unlock script</h3>
+      <p id="popupMsg">Choose a service to unlock the script. After completing the unlock flow (Linkvertise / LootLabs) you'll be redirected back here.</p>
+      <div class="pbtns" id="popupBtns"></div>
+      <p class="small-note">If you bypass verification you may be temporarily blocked.</p>
+    </div>
+  </div>
 
 <script>
-/* ========== CONFIG ========== */
-/* Anti-bypass settings (mode A chosen) */
-const BYPASS_THRESHOLD_MS = 3000; // < 3s => bypass
-const LOCK_DURATION_MS = 60000; // 60s lock on bypass
-
-/* ========== Data (example) ========== */
-/* Fill per-script direct-link per script in data.directLink */
+/* =========================
+   CONFIG: edit scriptsData
+   ========================= */
 const scriptsData = [
   {
-    id: "entrenchedww1",
+    id: "entrechedww1",
     name: "Entrenched WW1",
     created: "Oct 2025",
     category: "Shooter",
-    gameLink: "https://www.roblox.com/games/3678761576/ENTRENCHED-WW1", // example
-    directLink: "https://direct-link.net/1321138/ajnMHzXvEJoy", // unique per script
-    script: `-- Entrenched WW1 loader
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Wrate/Entrenched-Ww1/main/Main.loader"))()`
+    gameLink: "https://www.roblox.com/games/3678761576/ENTRENCHED-WW1", // game URL (for open game)
+    gameId: 3678761576, // if available for thumbnail
+    script: `-- LanHub Entrenched WW1 loader
+loadstring(game:HttpGet("https://raw.githubusercontent.com/YOUR/REPO/main/loader.lua"))()`,
+    serviceLinks: { // configure per-script unlock links (direct Linkvertise/LootLabs/direct)
+      linkvertise: "https://linkvertise.com/1321138/ajnMHzXvEJoy",
+      lootlabs: "https://direct-link.net/1321138/ajnMHzXvEJoy",
+      direct: "direct://show" // use special value that will bypass pop (we treat direct as immediate unlock)
+    }
   },
   {
-    id: "forest99",
+    id: "forest",
     name: "99 Night In The Forest",
     created: "Nov 2025",
     category: "Adventure",
-    gameLink: "https://www.roblox.com/games/16898830773/99-Night-In-The-Forest",
-    directLink: "https://direct-link.net/1321138/ajnMHzXvEJy",
-    script: `-- 99 Night In The Forest sample script
-print("LanHub: 99 Night In The Forest loaded!")`
+    gameLink: "https://www.roblox.com/games/16898830773/",
+    gameId: 16898830773,
+    script: `-- LanHub 99 Night In The Forest
+print("LanHub Forest Script Loaded!")`,
+    serviceLinks: {
+      linkvertise: "https://linkvertise.com/1321138/ajnMHzXvEJy",
+      lootlabs: "https://direct-link.net/1321138/ajnMHzXvEJy",
+      direct: "direct://show"
+    }
   }
 ];
 
-/* ========== State ========== */
-const grid = document.getElementById('grid');
-const overlayRoot = document.getElementById('overlayRoot');
-const toastRoot = document.getElementById('toastRoot');
-let pendingAction = null; // {id, action, startRedirectAt}
-let lockedUntil = 0; // timestamp ms when lock expires
+/* =========================
+   GLOBALS & UTIL
+   ========================= */
+const cardListEl = document.getElementById("cardList");
+const catFilterEl = document.getElementById("catFilter");
+const overlay = document.getElementById("overlay");
+const popupBtns = document.getElementById("popupBtns");
+let pendingAction = null; // {id,ts}
+const PENDING_KEY = "lanhub_pending_unlock";
+const BAN_KEY = "lanhub_ban_until";
 
-/* Utility: toast */
-function toast(msg, dur=1500){
-  const t = document.createElement('div');
-  t.className = 'toast'; t.innerText = msg; toastRoot.appendChild(t);
-  setTimeout(()=>{ t.remove(); }, dur);
+/* prevent double init */
+if (!window._LanHubInit) {
+  window._LanHubInit = true;
+  init();
+} else {
+  // already loaded — do nothing
 }
 
-/* Extract gameId from gameLink (roblox) */
-function getGameIdFromLink(link){
-  if (!link) return null;
-  try{
-    // possible formats: /games/{id}/..., /games/{id}
-    const m = link.match(/\/games\/(\d+)/);
-    if (m) return m[1];
-    const m2 = link.match(/\/catalog\/\?id=(\d+)/);
-    if (m2) return m2[1];
-  }catch(e){}
-  return null;
-}
-
-/* Build thumbnail url (roblox asset-thumbnail) */
-function thumbnailUrlFromGameLink(link){
-  const id = getGameIdFromLink(link);
-  if (!id) return null;
-  return `https://www.roblox.com/asset-thumbnail/image?assetId=${id}&width=420&height=420&format=Png`;
-}
-
-/* Render UI cards */
-function renderCards(){
-  grid.innerHTML = '';
-  // collect categories
-  const cats = new Set(['all']);
-  scriptsData.forEach(s=>cats.add(s.category));
-  // populate category select if empty
-  const sel = document.getElementById('catSelect');
-  if (sel.options.length <= 1){
-    // clear extras
-    while(sel.options.length>1) sel.remove(1);
-    Array.from(cats).filter(c=>c!=='all').forEach(c=>{
-      const o = document.createElement('option'); o.value=c; o.innerText=c; sel.appendChild(o);
-    });
+/* ========== initialization ========== */
+function init(){
+  buildCategoryOptions();
+  renderCards();
+  // check ban first
+  const banUntil = parseInt(localStorage.getItem(BAN_KEY) || "0", 10);
+  if (Date.now() < banUntil) {
+    showBlockedUI(Math.ceil((banUntil - Date.now())/1000));
+    return;
   }
+  // handle ?unlocked= parameter on load
+  handleReturnUnlock();
+}
 
-  scriptsData.forEach(data=>{
-    const card = document.createElement('div'); card.className='card';
-    // thumb
-    const thumbDiv = document.createElement('div'); thumbDiv.className='thumb';
-    const thumbUrl = thumbnailUrlFromGameLink(data.gameLink);
-    if (thumbUrl){
-      const img = document.createElement('img'); img.src = thumbUrl;
-      img.alt = data.name + ' thumbnail';
-      img.onerror = ()=>{ thumbDiv.innerText = 'BETA'; }
-      thumbDiv.appendChild(img);
+/* ========== categories ========== */
+function buildCategoryOptions(){
+  const cats = new Set(scriptsData.map(s => s.category || "Uncategorized"));
+  cats.forEach(c => {
+    const opt = document.createElement("option");
+    opt.value = c.toLowerCase();
+    opt.textContent = c;
+    catFilterEl.appendChild(opt);
+  });
+}
+
+/* ========== render cards ========== */
+function renderCards(){
+  cardListEl.innerHTML = "";
+  scriptsData.forEach(sd => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.dataset.id = sd.id;
+    card.dataset.name = sd.name.toLowerCase();
+    card.dataset.category = (sd.category||"").toLowerCase();
+
+    // thumbnail: attempt roblox asset-thumbnail by gameId; fallback to BETA block
+    let thumbHtml = "";
+    if (sd.gameId) {
+      const url = `https://www.roblox.com/asset-thumbnail/image?assetId=${sd.gameId}&width=420&height=420&format=Png`;
+      thumbHtml = `<img class="thumb-img" src="${url}" alt="${escapeHtml(sd.name)}" style="width:100%;height:160px;object-fit:cover;border-radius:10px;" onerror="this.style.display='none';this.closest('.card').querySelector('.thumb-fallback').style.display='flex'">`;
     } else {
-      thumbDiv.innerText = 'BETA';
+      thumbHtml = "";
     }
-    // meta
-    const meta = document.createElement('div'); meta.className='meta';
-    const left = document.createElement('div'); left.className='left';
-    const h2 = document.createElement('h2'); h2.innerText = data.name;
-    const sub = document.createElement('div'); sub.className='sub'; sub.innerText = `${data.created} • ${data.category}`;
-    left.appendChild(h2); left.appendChild(sub);
-    meta.appendChild(left);
-    // actions
-    const actions = document.createElement('div'); actions.className='actions';
-    const btnRaw = document.createElement('button'); btnRaw.className='btn'; btnRaw.innerText='Raw';
-    btnRaw.onclick = ()=> handleActionRequest(data.id, 'raw', btnRaw);
-    const btnCopy = document.createElement('button'); btnCopy.className='btn'; btnCopy.innerText='Copy';
-    btnCopy.onclick = ()=> handleActionRequest(data.id, 'copy', btnCopy);
-    const btnDownload = document.createElement('button'); btnDownload.className='btn'; btnDownload.innerText='Download';
-    btnDownload.onclick = ()=> handleActionRequest(data.id, 'download', btnDownload);
-    const btnGame = document.createElement('button'); btnGame.className='btn'; btnGame.innerText='Game';
-    btnGame.onclick = ()=> {
-      // open game link
-      if (data.gameLink) window.open(data.gameLink, '_blank');
-      else toast('No game link',1000);
-    };
-    actions.appendChild(btnRaw); actions.appendChild(btnCopy); actions.appendChild(btnDownload); actions.appendChild(btnGame);
 
-    // status
-    const stat = document.createElement('div'); stat.className='status';
-    stat.innerText = isUnlockedReady(data.id) ? 'Unlocked — ready' : 'Locked';
-    stat.dataset.id = data.id;
-
-    card.appendChild(thumbDiv); card.appendChild(meta); card.appendChild(actions); card.appendChild(stat);
-    card.dataset.name = data.name.toLowerCase();
-    card.dataset.category = data.category;
-    grid.appendChild(card);
+    card.innerHTML = `
+      <div class="thumb-fallback thumb">${sd.gameId?'<span class="tag">BETA</span>':''}${sd.gameId? '': 'BETA'}</div>
+      ${thumbHtml}
+      <div class="meta">
+        <div style="flex:1">
+          <div class="title">${escapeHtml(sd.name)}</div>
+          <div class="sub">${sd.created} • ${escapeHtml(sd.category||'Unknown')}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:110px">
+          <div class="tag">UNLOCK</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn" onclick="onAction('raw','${sd.id}',this)">Raw</button>
+        <button class="btn" onclick="onAction('copy','${sd.id}',this)">Copy</button>
+        <button class="btn" onclick="onAction('download','${sd.id}',this)">Download</button>
+        <button class="btn" onclick="openGame('${sd.gameLink}')">Game</button>
+      </div>
+      <div class="status" id="status-${sd.id}"></div>
+    `;
+    cardListEl.appendChild(card);
   });
 }
 
-/* Check if unlocked ready - for demo we simply check not locked; can be extended */
-function isUnlockedReady(id){
-  // placeholder: always ready unless global lock
-  return Date.now() > lockedUntil;
-}
-
-/* Filter search + category */
-function filterScripts(){
-  const q = (document.getElementById('searchInput').value||'').toLowerCase().trim();
-  const cat = (document.getElementById('catSelect').value||'all');
-  const cards = grid.querySelectorAll('.card');
-  cards.forEach(c=>{
-    const name = c.dataset.name || '';
-    const ccat = c.dataset.category || '';
-    const matchQ = !q || name.includes(q);
-    const matchC = cat === 'all' || ccat === cat;
-    c.style.display = (matchQ && matchC) ? '' : 'none';
+/* ========== search & filter ========== */
+function filterList(){
+  const q = document.getElementById("searchInput").value.toLowerCase().trim();
+  const cat = catFilterEl.value;
+  const cards = cardListEl.querySelectorAll(".card");
+  let visible = 0;
+  cards.forEach(card => {
+    const name = card.dataset.name || "";
+    const category = card.dataset.category || "";
+    const matchesQ = q.length === 0 || name.includes(q);
+    const matchesCat = (cat === "all") || category === cat;
+    const show = matchesQ && matchesCat;
+    card.style.display = show ? "flex" : "none";
+    if (show) visible++;
   });
+  // optional no-result message
+  let no = document.getElementById("noResults");
+  if (visible === 0) {
+    if (!no) {
+      no = document.createElement("div");
+      no.id = "noResults";
+      no.style.color = "#c6bfe2";
+      no.style.textAlign = "center";
+      no.style.marginTop = "12px";
+      no.textContent = "😔 No scripts found...";
+      cardListEl.appendChild(no);
+    }
+  } else if (no) no.remove();
 }
 
-/* ========== Action flow ========== */
-/* handleActionRequest: prepare pendingAction and show service popup */
-function handleActionRequest(id, action, btnEl){
-  if (Date.now() < lockedUntil){
-    const sec = Math.ceil((lockedUntil - Date.now())/1000);
-    toast(`Anti-bypass lock active: ${sec}s`, 2200);
+/* ========== actions: raw/copy/download ========== */
+function onAction(action, id, btnEl){
+  // check ban
+  const banUntil = parseInt(localStorage.getItem(BAN_KEY) || "0", 10);
+  if (Date.now() < banUntil) {
+    const s = Math.ceil((banUntil - Date.now())/1000);
+    transientNotice(`You are temporarily blocked (${s}s).`);
     return;
   }
 
   const data = scriptsData.find(s=>s.id===id);
-  if (!data) return toast('Script not found',1200);
+  if (!data) { alert("Script not found"); return; }
 
-  // set pending
-  pendingAction = { id, action, btnEl, startRedirectAt:0, step:'select-service' };
-
-  // show small service popup (type B)
-  showServicePopup(data);
-}
-
-/* showServicePopup: small popup with service choices (we only include Direct Link for now) */
-function showServicePopup(data){
-  removeOverlay();
-  const ov = document.createElement('div'); ov.className='overlay'; ov.id='lanhub-overlay';
-  const p = document.createElement('div'); p.className='popup';
-  p.innerHTML = `<h3>Choose Unlock Method</h3>
-    <p>Select Direct Link to unlock this script. After completion, return to this page and press "I've returned" (or switch back to this tab).</p>
-    <div class="popup-row">
-      <button id="directBtn">Direct Link</button>
-      <button id="cancelBtn" style="background:#3a004f">Cancel</button>
-    </div>
-    <div class="small-muted">Service: DirectLink (per-script)</div>`;
-
-  ov.appendChild(p); overlayRoot.style.display='block'; overlayRoot.appendChild(ov);
-
-  document.getElementById('directBtn').onclick = ()=>{
-    // open direct link in new tab and start checking
-    if (!data.directLink){
-      toast('No directLink configured for this script',1600);
-      closeOverlay();
-      return;
-    }
-    // record redirect start
-    pendingAction.startRedirectAt = Date.now();
-    pendingAction.step = 'redirected';
-    // open external link
-    window.open(data.directLink, '_blank');
-    // replace popup with checking UI
-    showCheckingPopup();
-    // attach focus/visibility listeners to auto-detect return
-    attachReturnListeners();
-  };
-
-  document.getElementById('cancelBtn').onclick = ()=>{
-    pendingAction = null;
-    closeOverlay();
-  };
-}
-
-/* showCheckingPopup: small anti-bypass checking UI */
-function showCheckingPopup(){
-  removeOverlay();
-  const ov = document.createElement('div'); ov.className='overlay'; ov.id='lanhub-overlay';
-  const p = document.createElement('div'); p.className='popup';
-  p.innerHTML = `<h3>LanHub Anti Bypass Detection</h3>
-    <div class="checking-box">
-      <div class="spinner"></div>
-      <p>Checking unlock... please return after completing the unlock page.</p>
-      <div style="display:flex;gap:8px;margin-top:8px;">
-        <button id="returnedBtn" style="flex:1;background:#2f6f2f">I've returned</button>
-        <button id="abortBtn" style="flex:1;background:#4a1d4a">Abort</button>
-      </div>
-      <div class="small-muted">This protects against automated bypass. If you bypass, UI will be locked 60s.</div>
-    </div>`;
-  ov.appendChild(p); overlayRoot.style.display='block'; overlayRoot.appendChild(ov);
-
-  document.getElementById('returnedBtn').onclick = ()=> handleReturn();
-  document.getElementById('abortBtn').onclick = ()=> { pendingAction = null; detachReturnListeners(); closeOverlay(); };
-}
-
-/* attach listeners to detect user returning (visibilitychange and focus) */
-let _visHandler = null, _focusHandler = null;
-function attachReturnListeners(){
-  _visHandler = ()=>{ if (!document.hidden) { handleReturn(); } };
-  _focusHandler = ()=>{ handleReturn(); };
-  document.addEventListener('visibilitychange', _visHandler);
-  window.addEventListener('focus', _focusHandler);
-}
-
-/* detach listeners */
-function detachReturnListeners(){
-  if (_visHandler) document.removeEventListener('visibilitychange', _visHandler);
-  if (_focusHandler) window.removeEventListener('focus', _focusHandler);
-  _visHandler = null; _focusHandler = null;
-}
-
-/* handleReturn: user returned -> validate time */
-function handleReturn(){
-  if (!pendingAction || pendingAction.step!=='redirected') return;
-  detachReturnListeners();
-  const now = Date.now();
-  const elapsed = now - (pendingAction.startRedirectAt || now);
-  // if elapsed < threshold => bypass
-  if (elapsed < BYPASS_THRESHOLD_MS){
-    // lock UI
-    lockedUntil = Date.now() + LOCK_DURATION_MS;
-    closeOverlay();
-    toast('Bypass detected — UI locked for 60s', 2500);
-    // update statuses visually
-    updateStatuses();
-    pendingAction = null;
+  // For actions that require unlock (raw/copy/download), open service selection popup
+  if (action === "raw" || action === "copy" || action === "download") {
+    // show popup of selection
+    showServiceSelectionPopup(data, action, btnEl);
     return;
   }
-  // success
-  closeOverlay();
-  toast('Unlock confirmed — performing action...', 1400);
-  // perform pending action after short delay
-  setTimeout(()=> performPendingAction(pendingAction), 700);
 }
 
-/* performPendingAction executes raw/copy/download */
-function performPendingAction(p){
-  if (!p) return;
-  const data = scriptsData.find(s=>s.id===p.id);
-  if (!data) { toast('Script data missing',1200); return; }
+/* ========== open game ========== */
+function openGame(url){
+  try {
+    // open roblox game page or fallback
+    window.open(url, "_blank");
+  } catch(e){}
+}
 
-  if (p.action === 'raw'){
-    // open raw script in new window (safe)
-    const w = window.open('', '_blank');
-    const safeCode = escapeHtml(data.script);
-    w.document.write(`<body style="background:#0a0012;color:#fff;padding:18px;font-family:monospace;"><h2 style="color:${'#c293ff'};">LanHub Raw - ${escapeHtml(data.name)}</h2><pre style="background:#120016;padding:12px;border-radius:10px;color:#fff;">${safeCode}</pre></body>`);
-    w.document.title = `LanHub - ${data.name} (raw)`;
-  } else if (p.action === 'copy'){
-    navigator.clipboard.writeText(data.script).then(()=> {
-      toast('Script copied to clipboard ✅',1400);
-    }).catch(()=> {
-      toast('Copy failed',1200);
-    });
-  } else if (p.action === 'download'){
-    const blob = new Blob([data.script], {type:'text/plain'});
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${data.name.replace(/\s+/g,'_')}.txt`;
-    document.body.appendChild(a); a.click(); a.remove();
-    toast('Download started',1200);
+/* ========== popup & unlock logic ========== */
+function showServiceSelectionPopup(data, action, btnEl){
+  // remove existing overlay content
+  if (overlay.style.display === "flex") {
+    // already open; replace
   }
-  pendingAction = null;
-}
+  document.getElementById("popupTitle").textContent = `Unlock: ${data.name}`;
+  document.getElementById("popupMsg").textContent = "Select which service to use to unlock the script. After unlocking you will be redirected back to this page.";
+  popupBtns.innerHTML = "";
 
-/* remove overlay */
-function removeOverlay(){
-  overlayRoot.innerHTML = ''; overlayRoot.style.display='none';
-}
-
-/* close overlay wrapper */
-function closeOverlay(){ removeOverlay(); detachReturnListeners(); }
-
-/* escapeHtml helper for raw display */
-function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-/* update statuses (locked or ready) */
-function updateStatuses(){
-  const statuses = document.querySelectorAll('.status');
-  statuses.forEach(st=>{
-    const id = st.dataset.id;
-    st.innerText = (Date.now() > lockedUntil) ? 'Unlocked — ready' : `Locked until ${Math.ceil((lockedUntil-Date.now())/1000)}s`;
+  // Build buttons (Linkvertise / LootLabs / Direct)
+  const services = ["linkvertise","lootlabs","direct"];
+  services.forEach(svc => {
+    const b = document.createElement("button");
+    const label = svc === "linkvertise" ? "Linkvertise" : svc === "lootlabs" ? "LootLabs" : "Direct (no unlock)";
+    b.textContent = label;
+    b.onclick = () => {
+      // set pending unlock in localStorage with expiry
+      const pending = { id: data.id, action, ts: Date.now() };
+      localStorage.setItem(PENDING_KEY, JSON.stringify(pending));
+      // open chosen link
+      const url = data.serviceLinks && data.serviceLinks[svc];
+      // if direct: we simulate immediate success by updating URL param
+      if (!url || url.startsWith("direct://")) {
+        // immediate unlock (simulate) -> redirect back with unlocked param
+        transientNotice("Direct unlocked — opening script...");
+        setTimeout(()=> {
+          // clear pending? keep it to validate
+          // redirect to same page with param
+          const cur = new URL(window.location.href);
+          cur.searchParams.set("unlocked", data.id);
+          window.location.href = cur.toString();
+        },600);
+      } else {
+        // open externally; user should complete unlock and come back to ?unlocked=ID
+        // open in new tab to not disturb current page
+        window.open(url, "_blank");
+        // show message and close overlay
+        transientNotice("Please complete the unlock in the new tab. When you're done, return to this page.");
+        // keep overlay shown (optional)
+        // We close overlay for UX but pending remains
+        closePopup();
+      }
+    };
+    popupBtns.appendChild(b);
   });
+
+  // show overlay
+  overlay.style.display = "flex";
 }
 
-/* Periodic UI updates */
-setInterval(updateStatuses, 800);
+/* allow clicking outside to close */
+function tryClosePopup(e){
+  if (e.target === overlay) closePopup();
+}
+function closePopup(){
+  overlay.style.display = "none";
+}
 
-/* initial render */
-renderCards();
-filterScripts();
+/* ========== handle return after unlock (= ?unlocked=ID) ========== */
+function handleReturnUnlock(){
+  const params = new URLSearchParams(window.location.search);
+  const unlocked = params.get("unlocked");
+  if (!unlocked) return;
+
+  // get pending
+  const rawPending = localStorage.getItem(PENDING_KEY);
+  let pending = null;
+  try { pending = rawPending ? JSON.parse(rawPending) : null; } catch(e){ pending = null; }
+
+  // require pending and matching id and not expired
+  const now = Date.now();
+  if (!pending || pending.id !== unlocked) {
+    // no pending -> treat as bypass attempt
+    punishBypass("Unlock mismatch or missing — bypass suspected");
+    return;
+  }
+
+  // quick-bypass detection: if time between setting pending and return < 3000ms -> likely bypass
+  if (now - (pending.ts || 0) < 3000) {
+    punishBypass("Unlock returned too quickly — bypass suspected");
+    return;
+  }
+
+  // If passed checks -> success: clear pending and show script immediately according to requested action
+  localStorage.removeItem(PENDING_KEY);
+  const scriptObj = scriptsData.find(s=>s.id===unlocked);
+  if (!scriptObj) { alert("Script not found"); return; }
+
+  // optionally show a transient checking UI
+  transientNotice("LanHub Anti Bypass Check — OK", 1200);
+
+  // perform the requested action (we stored action in pending)
+  const action = pending.action || "raw";
+  setTimeout(()=> {
+    if (action === "raw") openRawWindow(scriptObj);
+    else if (action === "copy") copyToClipboard(scriptObj);
+    else if (action === "download") downloadScriptObj(scriptObj);
+    // remove unlocked param from URL to avoid repeated auto-open
+    const url = new URL(window.location.href);
+    url.searchParams.delete("unlocked");
+    window.history.replaceState({}, "", url.toString());
+  },600);
+}
+
+/* ========== punish bypass ========== */
+function punishBypass(message){
+  // ban for 60 seconds (adjustable)
+  const BAN_SECONDS = 60;
+  const until = Date.now() + BAN_SECONDS*1000;
+  localStorage.setItem(BAN_KEY, until.toString());
+  // show blocked UI
+  showBlockedUI(BAN_SECONDS);
+  transientNotice(message, 2500);
+}
+
+/* ========== blocked UI ========== */
+function showBlockedUI(seconds){
+  cardListEl.innerHTML = "";
+  const blockBox = document.createElement("div");
+  blockBox.style.padding = "28px";
+  blockBox.style.borderRadius = "12px";
+  blockBox.style.background = "linear-gradient(180deg, rgba(80,0,0,0.06), rgba(20,0,0,0.12))";
+  blockBox.style.textAlign = "center";
+  blockBox.innerHTML = `<h2 style="color:#ff9fa6">Access blocked</h2><p style="color:#e3cfe1">You triggered anti-bypass protection. Wait <span id="banTimer">${seconds}</span>s to try again.</p>`;
+  cardListEl.appendChild(blockBox);
+
+  // countdown
+  const interval = setInterval(()=>{
+    const now = Date.now();
+    const until = parseInt(localStorage.getItem(BAN_KEY)||"0",10);
+    if (now >= until) {
+      clearInterval(interval);
+      localStorage.removeItem(BAN_KEY);
+      renderCards();
+      return;
+    }
+    const s = Math.ceil((until - now)/1000);
+    const el = document.getElementById("banTimer");
+    if (el) el.textContent = s;
+  },500);
+}
+
+/* ========== helper actions (open raw / copy / download) ========== */
+function openRawWindow(obj){
+  const w = window.open("", "_blank");
+  w.document.write(`<html><head><title>Raw - ${escapeHtml(obj.name)}</title><meta name="viewport" content="width=device-width,initial-scale=1"/></head><body style="background:#0b0010;color:#fff;font-family:monospace;padding:12px"><h2 style="color:${'#c293ff'}">${escapeHtml(obj.name)} - Raw</h2><pre style="background:#120018;padding:12px;border-radius:8px;white-space:pre-wrap;">${escapeHtml(obj.script)}</pre></body></html>`);
+  w.document.close();
+}
+
+function copyToClipboard(obj){
+  try {
+    navigator.clipboard.writeText(obj.script);
+    transientNotice("✅ Script copied to clipboard",1200);
+    // update small status
+    const st = document.getElementById(`status-${obj.id}`);
+    if (st) st.textContent = "Copied to clipboard — ready";
+  } catch(e){ alert("Clipboard failed"); }
+}
+
+function downloadScriptObj(obj){
+  const blob = new Blob([obj.script], {type:"text/plain"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `${obj.name.replace(/\s+/g,"_")}.txt`;
+  a.click();
+  transientNotice("Download started",900);
+}
+
+/* ========== UI helper: when user clicked service and later wants raw directly (finish after unlock) ========== */
+function finishActionForId(id, action){
+  const obj = scriptsData.find(s=>s.id===id);
+  if (!obj) return;
+  if (action === "raw") openRawWindow(obj);
+  if (action === "copy") copyToClipboard(obj);
+  if (action === "download") downloadScriptObj(obj);
+}
+
+/* ========== transient notice ========== */
+function transientNotice(text, ms=900){
+  const el = document.createElement("div");
+  el.style.position="fixed"; el.style.left="50%"; el.style.transform="translateX(-50%)"; el.style.bottom="18px";
+  el.style.background="#0d0014"; el.style.padding="10px 14px"; el.style.borderRadius="9px"; el.style.color="#fff";
+  el.style.border="1px solid rgba(168,85,247,0.2)"; el.style.zIndex=99999; el.style.boxShadow="0 6px 20px rgba(0,0,0,0.6)";
+  el.textContent = text;
+  document.body.appendChild(el);
+  setTimeout(()=>{ el.style.transition="all 0.25s"; el.style.opacity=0; el.style.transform="translateX(-50%) translateY(8px)"; }, ms);
+  setTimeout(()=>{ try{ el.remove() }catch(e){} }, ms+350);
+}
+
+/* ========== common utils ========== */
+function escapeHtml(s){
+  return (""+s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+/* ========== URL helper: handle ?unlocked= case when user opens direct link back (also attempt auto-open) ========== */
+// already handled in handleReturnUnlock called at init()
 
 </script>
 </body>
