@@ -46,50 +46,49 @@
 <div id="notice"></div>
 
 <script>
-const scriptsData=[
+const scriptsData = [
   {
-    id:"entrenchedww1",
-    name:"Entrenched WW1",
-    created:"Oct 7, 2025",
-    script:`-- Entrenched WW1 loader
+    id: "entrenchedww1",
+    name: "Entrenched WW1",
+    created: "Oct 7, 2025",
+    script: `-- Entrenched WW1 loader
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Wrate/Entrenched-Ww1/refs/heads/main/Main.loader"))()`
   },
   {
-    id:"entrenchedww1spade",
-    name:"Entreched WW1 Auto Dig",
-    created:"Nov 2, 2025",
-    script:`-- Entrenched WW1 Auto Dig loader
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Wrate/AutoSEEntrechedWW1/refs/heads/main/MainLoader"))()`
+    id: "entrenchedww1_spade",
+    name: "Entrenched WW1 Auto Dig",
+    created: "Nov 2, 2025",
+    script: `-- Entrenched WW1 Auto Dig loader
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Wrate/AutoSEEntrechedWW1/refs/heads/main/MainLoader"))()`
   },
   {
-    id:"piratemayhemscript",
-    name:"Pirate Mayhem",
-    created:"Oct 10, 2025",
-    script:`-- Pirate Mayhem loader
-  loadstring(game:HttpGet("https://raw.githubusercontent.com/Wrate/PirateMayhem/refs/heads/main/MainLoader"))()`
+    id: "piratemayhemscript",
+    name: "Pirate Mayhem",
+    created: "Oct 10, 2025",
+    script: `-- Pirate Mayhem loader
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Wrate/PirateMayhem/refs/heads/main/MainLoader"))()`
   },
   {
-    id:"plantvsbrainrot",
-    name:"Plant Vs Brainrot",
-    created:"idk 67, 2025",
-    script:`-- Plant Vs Brainrot loader
-  loadstring(game:HttpGet("https://raw.githubusercontent.com/Wrate/Plant-Vs-Brainrot/refs/heads/main/MainLoader"))()`
-   },
-   {
-    id:"buildaarmy",
-    name:"Build A Army",
-    created:"idk 91, 2025",
-    script:`-- Build A Army loader
-  loadstring(game:HttpGet("https://raw.githubusercontent.com/Wrate/Build-An-Army/refs/heads/main/MainLoader"))()`   
-   },
-   {
-    id:"entrenchedww1",
-    name:"Entrenched WW1 V2",
-    created:"Oct 7, 2025",
-    script:`-- Entrenched WW1 V2 loader
-loadstring(game:HttpGet("loadstring(game:HttpGet("https://raw.githubusercontent.com/Wrate/Entrenche-LanHubV2/refs/heads/main/MainLoader"))()`
+    id: "plantvsbrainrot",
+    name: "Plant Vs Brainrot",
+    created: "idk 67, 2025",
+    script: `-- Plant Vs Brainrot loader
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Wrate/Plant-Vs-Brainrot/refs/heads/main/MainLoader"))()`
   },
-   }
+  {
+    id: "buildaarmy",
+    name: "Build A Army",
+    created: "idk 91, 2025",
+    script: `-- Build A Army loader
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Wrate/Build-An-Army/refs/heads/main/MainLoader"))()`
+  },
+  {
+    id: "entrenchedww1_v2",
+    name: "Entrenched WW1 V2",
+    created: "Oct 7, 2025",
+    script: `-- Entrenched WW1 V2 loader
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Wrate/Entrenche-LanHubV2/refs/heads/main/MainLoader"))()`
+  }
 ];
 
 const cards=document.getElementById("cards");
@@ -129,6 +128,7 @@ function filterCards(){
 
 function openRaw(id){
   const d=scriptsData.find(x=>x.id===id);
+  if (!d) return;
   rawTitle.textContent="Raw: "+d.name;
   rawContent.textContent=d.script;
   rawModal.style.display="flex";
@@ -139,14 +139,21 @@ function hideRaw(){ rawModal.style.display="none"; }
 
 async function copyScript(id,btn){
   const d=scriptsData.find(x=>x.id===id);
-  await navigator.clipboard.writeText(d.script);
-  btn.textContent="Copied!";
-  setTimeout(()=>btn.textContent="Copy",900);
-  notify("Copied!");
+  if (!d) return;
+  try{
+    await navigator.clipboard.writeText(d.script);
+    btn.textContent="Copied!";
+    setTimeout(()=>btn.textContent="Copy",900);
+    notify("Copied!");
+  }catch(err){
+    console.error("Clipboard error:", err);
+    notify("Copy failed");
+  }
 }
 
 function downloadScript(id){
   const d=scriptsData.find(x=>x.id===id);
+  if (!d) return;
   const a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob([d.script],{type:"text/plain"}));
   a.download=d.name.replace(/\s+/g,"_")+".txt";
