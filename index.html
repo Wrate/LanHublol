@@ -1,295 +1,135 @@
- <!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>LanHub - Script Library</title>
-<link rel="preconnect" href="https://www.roblox.com">
 <style>
-  :root{
-    --bgA:#0b0010; --bgB:#190024; --card:#1a0028; --accent:#a855f7;
-    --muted:#bdbdbd; --glass: rgba(25,0,40,0.7);
-  }
-  *{box-sizing:border-box;margin:0;padding:0;font-family:Montserrat,system-ui,Arial;}
-  html,body{height:100%}
-  body{
-    min-height:100vh;
-    background:linear-gradient(160deg,var(--bgA),var(--bgB));
-    color:#fff;padding:20px;display:flex;flex-direction:column;align-items:center;
-  }
-
-  header{width:100%;max-width:980px;display:flex;flex-direction:column;gap:12px;align-items:center}
-  h1{color:#c293ff;text-shadow:0 0 10px #8b5cf6;font-size:1.6rem}
-  .top-row{width:100%;display:flex;gap:12px;align-items:center;justify-content:space-between}
-  .search-wrap{display:flex;gap:8px;width:100%;max-width:640px}
-  input[type="search"], select{
-    flex:1;padding:12px 14px;border-radius:12px;border:none;background:rgba(40,0,70,0.6);color:#fff;
-    outline:none;font-size:0.98rem;
-  }
-  select{flex:0.45;min-width:110px;background:rgba(60,0,100,0.5)}
-
-  main{width:100%;max-width:980px;margin-top:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;padding-bottom:30px}
-
-  .card{
-    background:var(--glass);border:1px solid rgba(168,85,247,0.18);border-radius:14px;padding:12px;
-    box-shadow:0 6px 20px rgba(0,0,0,0.35);backdrop-filter:blur(8px);display:flex;flex-direction:column;
-  }
-  .thumb{
-    width:100%;height:170px;border-radius:10px;object-fit:cover;background:linear-gradient(135deg,#3a0060,#6b21a8);
-    display:flex;align-items:center;justify-content:center;font-weight:700;color:#e7c6ff;text-shadow:0 0 8px rgba(168,85,247,0.3);
-  }
-  .meta{margin:10px 0 6px 0;display:flex;flex-direction:column;gap:6px}
-  .title{font-weight:700;color:#e6d1ff;font-size:1.05rem}
-  .sub{font-size:0.88rem;color:var(--muted)}
-  .actions{display:flex;gap:8px;margin-top:auto}
-  .actions button{flex:1;padding:10px;border-radius:10px;border:none;background:#5b218e;color:white;font-weight:700;cursor:pointer}
-  .actions button:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(147,51,234,0.25)}
-  .small{font-size:0.85rem;padding:8px;border-radius:8px}
-  footer{margin-top:20px;color:#aaa;font-size:0.9rem;text-align:center;width:100%;max-width:980px;padding-bottom:8px}
-
-  /* modal */
-  #rawModal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:9999}
-  #rawBox{width:92%;max-width:900px;background:#0f0014;border-radius:12px;padding:14px;border:1px solid rgba(168,85,247,0.25);box-shadow:0 10px 50px rgba(0,0,0,0.7)}
-  #rawBox pre{white-space:pre-wrap;background:#120019;padding:12px;border-radius:8px;color:#e8d9ff;max-height:60vh;overflow:auto;font-family:ui-monospace,monospace;font-size:13px}
-  .modal-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-  .closeBtn{background:#2b003c;color:white;padding:8px 10px;border-radius:8px;border:none;cursor:pointer}
-
-  /* small helper */
-  .notice{position:fixed;right:20px;bottom:20px;background:#120019;padding:10px 14px;border-radius:10px;border:1px solid rgba(168,85,247,0.25);box-shadow:0 8px 30px rgba(0,0,0,0.5)}
-  @media (max-width:640px){
-    .top-row{flex-direction:column;align-items:stretch}
-    main{grid-template-columns:1fr;max-width:480px}
-  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+  body{background:#0c0013;color:white;padding:20px;display:flex;flex-direction:column;align-items:center}
+  h1{color:#c293ff;text-shadow:0 0 10px #8b5cf6;margin-bottom:10px}
+  #cards{width:100%;max-width:900px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:10px}
+  .card{background:#1a0028;border:1px solid #7a28c9;padding:12px;border-radius:12px;box-shadow:0 0 15px #0006}
+  .title{font-size:1.1rem;font-weight:700;margin-bottom:6px;color:#e6d1ff}
+  .sub{font-size:0.85rem;color:#bbb;margin-bottom:10px}
+  .actions{display:flex;gap:8px}
+  .actions button{flex:1;background:#5b218e;color:white;border:none;padding:10px;border-radius:10px;font-weight:bold;cursor:pointer}
+  #rawModal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center}
+  #rawBox{background:#120019;padding:16px;border-radius:12px;width:90%;max-width:850px;border:1px solid #7a28c9}
+  #rawBox pre{max-height:60vh;overflow:auto;background:#1f0030;padding:12px;border-radius:10px;color:#e6d9ff}
+  #notice{display:none;position:fixed;right:20px;bottom:20px;background:#1f0030;padding:10px;border-radius:8px}
 </style>
 </head>
 <body>
 
-<header>
-  <h1>LanHub Script Library</h1>
-  <div class="top-row">
-    <div class="search-wrap">
-      <input id="searchInput" type="search" placeholder="🔍 Search scripts (title / category)..." oninput="filterCards()" />
-      <select id="categoryFilter" onchange="filterCards()">
-        <option value="all">All categories</option>
-      </select>
-    </div>
-    <div style="display:flex;gap:8px;align-items:center">
-      <button onclick="openAllRaw()" class="small">Open all Raw</button>
-    </div>
-  </div>
-</header>
+<h1>LanHub Script Library</h1>
 
-<main id="cards"></main>
+<div style="width:100%;max-width:900px">
+  <input id="searchInput" type="search" placeholder="Search script..." 
+  oninput="filterCards()" style="width:100%;padding:12px;border-radius:10px;background:#2a0044;border:none;color:white">
+</div>
 
-<footer>
-  © 2025 LanHub — All Rights Reserved.
-</footer>
+<div id="cards"></div>
 
-<!-- Raw modal -->
-<div id="rawModal" onclick="closeModalIfOutside(event)">
-  <div id="rawBox" role="dialog" aria-modal="true">
-    <div class="modal-top">
+<footer style="margin-top:20px;color:#aaa">© 2025 LanHub — All Rights Reserved.</footer>
+
+<div id="rawModal" onclick="closeRaw(event)">
+  <div id="rawBox">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
       <strong id="rawTitle" style="color:#d6b3ff"></strong>
-      <div>
-        <button class="closeBtn" onclick="closeRaw()">Close</button>
-      </div>
+      <button onclick="hideRaw()" style="background:#5b218e;color:white;border:none;padding:6px 10px;border-radius:8px">Close</button>
     </div>
-    <pre id="rawContent">loading...</pre>
+    <pre id="rawContent"></pre>
   </div>
 </div>
 
-<div id="notice" class="notice" style="display:none"></div>
+<div id="notice"></div>
 
 <script>
-if(window.LanHubLoaded){ console.log("LanHub already loaded - skipping re-init"); }
-else {
-  window.LanHubLoaded = true;
+const scriptsData=[
+  {
+    id:"entrenchedww1",
+    name:"Entrenched WW1",
+    created:"Oct 25, 2025",
+    script:`-- Entrenched WW1 loader
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Wrate/Entrenched-Ww1/refs/heads/main/Main.loader"))()`
+  },
+  {
+    id:"forest99",
+    name:"99 Night In The Forest",
+    created:"Nov 4, 2025",
+    script:`print("LanHub Forest Loaded")`
+  }
+];
 
-  // === DATA ===
-  // Edit this array to add/update scripts. Use gameLink OR gameId (roblox).
-  const scriptsData = [
-    {
-      id: "entrenchedww1",
-      name: "Entrenched WW1",
-      created: "Oct 25, 2025",
-      category: "Shooter",
-      gameLink: "https://www.roblox.com/games/3678761576/ENTRENCHED-WW1",
-      gameId: 3678761576,
-      script: `-- Entrenched WW1 loader\nloadstring(game:HttpGet("https://raw.githubusercontent.com/Wrate/Entrenched-Ww1/refs/heads/main/Main.loader"))()`
-    },
-    {
-      id: "forest99",
-      name: "99 Night In The Forest",
-      created: "Nov 04, 2025",
-      category: "Adventure",
-      gameLink: "https://www.roblox.com/games/16898830773/",
-      gameId: 16898830773,
-      script: `-- 99 Night In The Forest (example)\nprint("LanHub: Forest script loaded!")`
-    }
-  ];
+const cards=document.getElementById("cards");
+const search=document.getElementById("searchInput");
+const rawModal=document.getElementById("rawModal");
+const rawTitle=document.getElementById("rawTitle");
+const rawContent=document.getElementById("rawContent");
+const notice=document.getElementById("notice");
 
-  // === elements ===
-  const cardsEl = document.getElementById('cards');
-  const searchInput = document.getElementById('searchInput');
-  const categoryFilter = document.getElementById('categoryFilter');
-  const rawModal = document.getElementById('rawModal');
-  const rawTitle = document.getElementById('rawTitle');
-  const rawContent = document.getElementById('rawContent');
-  const notice = document.getElementById('notice');
-
-  // build category options unique
-  const categories = Array.from(new Set(scriptsData.map(s => s.category || 'Uncategorized')));
-  categories.forEach(cat=>{
-    const o = document.createElement('option');
-    o.value = cat.toLowerCase();
-    o.textContent = cat;
-    categoryFilter.appendChild(o);
+function render(){
+  cards.innerHTML="";
+  scriptsData.forEach(d=>{
+    const el=document.createElement("div");
+    el.className="card";
+    el.setAttribute("data-name",d.name.toLowerCase());
+    el.innerHTML=`
+      <div class="title">${d.name}</div>
+      <div class="sub">Created: ${d.created}</div>
+      <div class="actions">
+        <button onclick="openRaw('${d.id}')">Raw</button>
+        <button onclick="copyScript('${d.id}',this)">Copy</button>
+        <button onclick="downloadScript('${d.id}')">Download</button>
+      </div>
+    `;
+    cards.appendChild(el);
   });
+}
+render();
 
-  // render cards
-  function renderCards(){
-    cardsEl.innerHTML = '';
-    scriptsData.forEach(data=>{
-      const card = document.createElement('article');
-      card.className = 'card';
-      card.setAttribute('data-name', data.name.toLowerCase());
-      card.setAttribute('data-category', (data.category||'').toLowerCase());
+function filterCards(){
+  const q=search.value.toLowerCase();
+  document.querySelectorAll(".card").forEach(c=>{
+    const name=c.getAttribute("data-name");
+    c.style.display=name.includes(q)?"block":"none";
+  });
+}
 
-      // thumbnail src (Roblox asset-thumbnail). If gameId absent, show BETA block
-      let thumbHtml = '';
-      if(data.gameId){
-        const src = `https://www.roblox.com/asset-thumbnail/image?assetId=${data.gameId}&width=420&height=420&format=Png`;
-        thumbHtml = `<img class="thumb" src="${src}" alt="${escapeHtml(data.name)} thumbnail" onerror="this.onerror=null;this.replaceWith(createBeta())">`;
-      } else {
-        thumbHtml = `<div class="thumb">BETA</div>`;
-      }
+function openRaw(id){
+  const d=scriptsData.find(x=>x.id===id);
+  rawTitle.textContent="Raw: "+d.name;
+  rawContent.textContent=d.script;
+  rawModal.style.display="flex";
+}
 
-      card.innerHTML = `
-        ${thumbHtml}
-        <div class="meta">
-          <div class="title">${escapeHtml(data.name)}</div>
-          <div class="sub">Created: ${escapeHtml(data.created)} • ${escapeHtml(data.category||'Uncategorized')}</div>
-        </div>
-        <div style="margin-top:8px" class="actions">
-          <button onclick="openRawModal('${data.id}')">Raw</button>
-          <button onclick="copyScript('${data.id}', this)">Copy</button>
-          <button onclick="downloadScript('${data.id}')">Download</button>
-          <button onclick="openGame('${data.gameLink || ''}')" style="flex:0.8">Game</button>
-        </div>
-      `;
-      cardsEl.appendChild(card);
-    });
-  }
+function closeRaw(e){ if(e.target===rawModal) hideRaw(); }
+function hideRaw(){ rawModal.style.display="none"; }
 
-  // helpers
-  function createBeta(){ const d=document.createElement('div'); d.className='thumb'; d.textContent='BETA'; return d; }
-  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]); }
+async function copyScript(id,btn){
+  const d=scriptsData.find(x=>x.id===id);
+  await navigator.clipboard.writeText(d.script);
+  btn.textContent="Copied!";
+  setTimeout(()=>btn.textContent="Copy",900);
+  notify("Copied!");
+}
 
-  // open raw modal
-  function openRawModal(id){
-    const d = scriptsData.find(x=>x.id===id);
-    if(!d) return notify('Script not found');
-    rawTitle.textContent = `Raw: ${d.name}`;
-    rawContent.textContent = d.script;
-    rawModal.style.display = 'flex';
-  }
-  window.openRawModal = openRawModal;
+function downloadScript(id){
+  const d=scriptsData.find(x=>x.id===id);
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([d.script],{type:"text/plain"}));
+  a.download=d.name.replace(/\s+/g,"_")+".txt";
+  a.click();
+  notify("Download started");
+}
 
-  function closeRaw(){ rawModal.style.display='none'; rawContent.textContent=''; rawTitle.textContent=''; }
-  window.closeRaw = closeRaw;
-  function closeModalIfOutside(e){
-    if(e.target===rawModal) closeRaw();
-  }
-
-  // copy with feedback
-  async function copyScript(id, btnEl){
-    const d = scriptsData.find(x=>x.id===id);
-    if(!d) return notify('Script not found');
-    try{
-      await navigator.clipboard.writeText(d.script);
-      const old = btnEl ? btnEl.textContent : null;
-      if(btnEl){ btnEl.textContent='✅ Copied'; setTimeout(()=>btnEl.textContent=old,1100); }
-      notify('Script copied to clipboard');
-    }catch(err){
-      notify('Copy failed (permission)');
-    }
-  }
-  window.copyScript = copyScript;
-
-  // download
-  function downloadScript(id){
-    const d = scriptsData.find(x=>x.id===id);
-    if(!d) return notify('Script not found');
-    const blob = new Blob([d.script], {type:'text/plain;charset=utf-8'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `${d.name.replace(/\s+/g,'_')}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    notify('Download started');
-  }
-  window.downloadScript = downloadScript;
-
-  function openGame(url){
-    if(!url) return notify('No game link available');
-    window.open(url,'_blank');
-  }
-  window.openGame = openGame;
-
-  // open all raw (example helper)
-  function openAllRaw(){
-    const merged = scriptsData.map(s=>`-- ${s.name}\n\n${s.script}`).join("\n\n/* ----- */\n\n");
-    rawTitle.textContent = 'All Raw Scripts';
-    rawContent.textContent = merged;
-    rawModal.style.display='flex';
-  }
-  window.openAllRaw = openAllRaw;
-
-  // notify small
-  let noticeTimer = null;
-  function notify(text){
-    notice.style.display='block';
-    notice.textContent = text;
-    clearTimeout(noticeTimer);
-    noticeTimer = setTimeout(()=>{ notice.style.display='none'; },1500);
-  }
-
-  // search + category filter
-  function filterCards(){
-    const q = (searchInput.value||'').toLowerCase().trim();
-    const cat = categoryFilter.value;
-    const cards = cardsEl.querySelectorAll('.card');
-    let visible = 0;
-    cards.forEach(card=>{
-      const name = card.getAttribute('data-name');
-      const c = card.getAttribute('data-category');
-      const matchQ = !q || name.includes(q) || (card.querySelector('.sub') && card.querySelector('.sub').textContent.toLowerCase().includes(q));
-      const matchC = (cat==='all') || (c===cat);
-      const show = matchQ && matchC;
-      card.style.display = show ? 'flex' : 'none';
-      if(show) visible++;
-    });
-    // small no results
-    const existing = document.getElementById('no-res');
-    if(visible===0){
-      if(!existing){
-        const p = document.createElement('p'); p.id='no-res';
-        p.style.color='#aaa'; p.style.textAlign='center'; p.style.marginTop='18px';
-        p.textContent='😔 No scripts found...';
-        cardsEl.appendChild(p);
-      }
-    }else if(existing) existing.remove();
-  }
-  window.filterCards = filterCards;
-
-  // small safety: prevent duplication/double-ui if rerun
-  renderCards();
-  filterCards();
-
-  // expose for debugging
-  window.LanHubAPI = { data: scriptsData, openRaw: openRawModal };
+function notify(t){
+  notice.textContent=t;
+  notice.style.display="block";
+  setTimeout(()=>notice.style.display="none",1200);
 }
 </script>
+
 </body>
 </html>
